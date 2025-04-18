@@ -4,30 +4,37 @@ import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  const curYear = new Date().getFullYear();
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="header">
+        <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
+          <label style={{"margin": "0.5em", "marginBottom": "0em"}}>Expire after (hour): </label>
+          <input type="number" placeholder=''></input>
+        </div>
+        <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
+        <label style={{"margin": "0.5em", "marginBottom": "0em"}}> Password: </label>
+          <input type="password" placeholder='Optional'></input>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+
+      <div className="container">
+        <textarea style={{"position": "absolute", "top": "100px", "left": "0px", "width": "100%", "height": "calc(100vh - 250px)"}}></textarea>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+
+      <div className="footer">
+        <div className="footer-left">
+          <div>
+            <button>Save</button>
+            <button>Load</button>
+            <button>Clear</button>
+            <button>Copy Link</button>
+          </div>
+          <div>
+            <label>Copyright 2025 - {curYear} @TanLocLouis</label>
+          </div>
+        </div>
+      </div>
     </>
   )
 }
