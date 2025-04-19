@@ -16,7 +16,6 @@ function Show() {
     const url = import.meta.env.VITE_SERVER + "get/" + id; 
     async function fetchData() {
       const response = await axios.get(url);
-      console.log(response.data);
       setText(response.data.text);
       setMetadata(response.data.metadata);
     }
@@ -37,6 +36,14 @@ function Show() {
     });
   }
 
+  const handleCopyText = () => {
+    navigator.clipboard.writeText(text).then(() => {
+      document.getElementById("copy-text").innerText = "Copied!";
+    }, (err) => {
+      console.error('Could not copy text: ', err);
+    });
+  }
+
   const curYear = new Date().getFullYear();
 
   return (
@@ -50,10 +57,11 @@ function Show() {
         </div>
 
         <div style={{textAlign: "left", width: "1000px", margin: "0 auto", paddingTop: "1em"}}>
-            <button id="copy-link" style={{margin: "0 0 0 1em"}} onClick={handleCopyLink}>Copy Link</button>
             <h5 style={{margin: "0 0 0 1em"}}>Created at: {metadata.createdAt}</h5>
             <h5 style={{margin: "0 0 0 1em"}}>Expire after: {metadata.expireAfter} hours</h5>
             <h5 style={{margin: "0 0 0 1em"}}>ID: {metadata.id}</h5>
+            <button id="copy-link" style={{margin: "0 0 0 1em"}} onClick={handleCopyLink}>Copy Link</button>
+            <button id="copy-text" style={{margin: "0 0 0 1em"}} onClick={handleCopyText}>Copy Text</button>
             <textarea style={{margin: "1em", padding: "1em", width: "100%", height: "calc(100vh - 300px)"}} value={text}></textarea>
         </div>
     </div>
