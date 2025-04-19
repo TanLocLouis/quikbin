@@ -3,18 +3,16 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 
 function Create() {
-  useEffect(() => {
-    document.getElementById("header-expire").value = 1;
-  }, []);
-
+  // Text area state
   const [text, setText]= useState("");
   const handleTextChanged = (e) => {
     setText(e.target.value);
   }
 
+  // Metadata state
   const [metadata, setMetadata] = useState({
     id: uuidv4().slice(0, 8),
-    expireAfter: 0,
+    expireAfter: 1,
     password: "",
     createdAt: new Date().toISOString(),
   });
@@ -25,34 +23,43 @@ function Create() {
     });
   }
   const handlePasswordChanged = (e) => {
-    console.log(metadata);
     setMetadata({
       ...metadata,
       password: e.target.value,
     });
   }
 
+  // ID state
   const textAreaRef = useRef(null);
   const handleClear = () => {
     setText("");
     textAreaRef.current.value = "";
     setMetadata({
       id: uuidv4(),
-      expireAfter: 0,
+      expireAfter: 1,
       password: "",
       createdAt: new Date().toISOString(),
     });
   }
+  const handleIDChanged = (e) => {
+    setMetadata({
+      ...metadata,
+      id: e.target.value,
+    });
+  }
 
-  
+  useEffect(() => {
+    document.getElementById("header-expire").value = metadata.expireAfter;
+    document.getElementById("header-id").value = metadata.id;
+  }, []);
+
+  // Handle create data
   const handleCreate = () => {
     const url = import.meta.env.VITE_SERVER + 'create';
-    console.log(url);
     axios.post(url, {
       text: text,
       metadata: metadata,
     }).then((response) => {
-      console.log(import.meta.env.VITE_HOST);
       location.href = import.meta.env.VITE_HOST + metadata.id.slice(0, 8);
     })
   }
@@ -60,11 +67,19 @@ function Create() {
   const handleNew = () => {
     location.reload();
   }
-
   const curYear = new Date().getFullYear();
+
   return (
     <>
       <div className="header">
+        <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
+          <label style={{"margin": "0.5em", "marginBottom": "0em"}}>ID: </label>
+          <input  id="header-id" 
+                  type="text" 
+                  onChange={handleIDChanged}
+                  placeholder='ID'
+                  required></input>
+        </div>
         <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
           <label style={{"margin": "0.5em", "marginBottom": "0em"}}>Expire after (hours): </label>
           <input  id="header-expire" 
@@ -74,7 +89,7 @@ function Create() {
                   required></input>
         </div>
         <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
-        <label style={{"margin": "0.5em", "marginBottom": "0em"}}> Password: </label>
+          <label style={{"margin": "0.5em", "marginBottom": "0em"}}> Password: </label>
           <input type="password" 
                   onChange={handlePasswordChanged}
                   placeholder='Optional'></input>
