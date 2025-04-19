@@ -17,6 +17,8 @@ client.connect()
     .then(() => console.log('[STATUS] Connected to MongoDB'))
     .catch(err => console.error('[ERROR] Failed to connect to MongoDB', err));
 
+
+// Create a new bin
 app.post('/create', (req, res) => {
     const db = client.db('quikbin');
     const collection = db.collection('bins');
@@ -33,6 +35,27 @@ app.post('/create', (req, res) => {
         .catch(err => {
             console.error('[ERROR] Failed to create bin', err);
             res.status(500).json({ message: 'Failed to create bin' });
+        });
+});
+
+
+// Get a bin by ID
+app.get('/get/:id', (req, res) => {
+    const db = client.db('quikbin');
+    const collection = db.collection('bins');
+    const id = req.params.id;
+    collection.findOne({'metadata.id': id})
+        .then(bin => {
+            if (!bin) {
+                console.log('[STATUS] Bin not found', id);
+                return res.status(404).json({ message: 'Bin not found' });
+            }
+            console.log('[STATUS] Bin retrieved', bin);
+            res.status(200).json(bin);
+        })
+        .catch(err => {
+            console.error('[ERROR] Failed to retrieve bin', err);
+            res.status(500).json({ message: 'Failed to retrieve bin' });
         });
 });
 
