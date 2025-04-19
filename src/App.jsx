@@ -1,15 +1,20 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './App.css'
 import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
 
 function App() {
+  useEffect(() => {
+    document.getElementById("header-expire").value = 1;
+  }, []);
+
   const [text, setText]= useState("");
   const handleTextChanged = (e) => {
     setText(e.target.value);
   }
 
   const [metadata, setMetadata] = useState({
-    id: uuidv4(),
+    id: uuidv4().slice(0, 8),
     expireAfter: 0,
     password: "",
     createdAt: new Date().toISOString(),
@@ -40,6 +45,19 @@ function App() {
     });
   }
 
+  
+  const handleCreate = () => {
+    const url = import.meta.env.VITE_HOST + 'create';
+    console.log(url);
+    axios.post(url, {
+      text: text,
+      metadata: metadata,
+    })
+  }
+
+  const handleNew = () => {
+    location.reload();
+  }
 
   const curYear = new Date().getFullYear();
   return (
@@ -47,9 +65,11 @@ function App() {
       <div className="header">
         <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
           <label style={{"margin": "0.5em", "marginBottom": "0em"}}>Expire after (hours): </label>
-          <input type="number" 
+          <input  id="header-expire" 
+                  type="number" 
                   onChange={handleExpireChanged}
-                  placeholder='Hours'></input>
+                  placeholder='Hours'
+                  required></input>
         </div>
         <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
         <label style={{"margin": "0.5em", "marginBottom": "0em"}}> Password: </label>
@@ -68,7 +88,8 @@ function App() {
       <div className="footer">
         <div className="footer-left">
           <div>
-            <button>Create</button>
+            <button onClick={handleNew}>New</button>
+            <button onClick={handleCreate}>Create</button>
             <button style={{"display": "none"}}>Copy Link</button>
             <button onClick={handleClear}>Clear</button>
           </div>
