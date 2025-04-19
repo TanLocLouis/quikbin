@@ -61,5 +61,5 @@ app.get('/get/:id', (req, res) => {
 
 // Backend Listen
 app.listen(3000, () => {
-    console.log('[STATUS] Server is listeing on port 5000');
+    console.log('[STATUS] Server is listeing on port 3000');
 })
