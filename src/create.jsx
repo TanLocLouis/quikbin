@@ -49,7 +49,6 @@ function Create() {
   }
 
   useEffect(() => {
-    document.getElementById("header-expire").value = metadata.expireAfter;
     document.getElementById("header-id").value = metadata.id;
   }, []);
 
@@ -81,12 +80,17 @@ function Create() {
                   required></input>
         </div>
         <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
-          <label style={{"margin": "0.5em", "marginBottom": "0em"}}>Expire after (hours): </label>
-          <input  id="header-expire" 
-                  type="number" 
-                  onChange={handleExpireChanged}
-                  placeholder='Hours'
-                  required></input>
+          <label style={{"margin": "0.5em", "marginBottom": "0em"}}>Expire after: </label>
+          <select id="header-expire" onChange={handleExpireChanged}>
+            <option value="60">1 minutes</option>
+            <option value="900" selected>15 minutes</option>
+            <option value="1800">30 minutes</option>
+            <option value="3600">1 hours</option>
+            <option value="21600">6 hours</option>
+            <option value="43200">12 hours</option>
+            <option value="86400">24 hours</option>
+            <option value="Never">Never</option>
+          </select>
         </div>
         <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
           <label style={{"margin": "0.5em", "marginBottom": "0em"}}> Password: </label>
