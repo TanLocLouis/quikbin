@@ -62,7 +62,9 @@ function Show() {
             <h5 style={{margin: "0 0 0 1em"}}>ID: {metadata.id}</h5>
             <button id="copy-link" style={{margin: "0 0 0 1em"}} onClick={handleCopyLink}>Copy Link</button>
             <button id="copy-text" style={{margin: "0 0 0 1em"}} onClick={handleCopyText}>Copy Text</button>
-            <textarea style={{margin: "1em", padding: "1em", width: "100%", height: "calc(100vh - 300px)"}} value={text}></textarea>
+            <div>
+              <textarea style={{margin: "1em", padding: "1em", width: "100vw", height: "calc(100vh - 300px)"}} value={text}></textarea>
+            </div>
         </div>
     </div>
   );
