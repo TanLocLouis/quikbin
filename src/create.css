@@ -1,0 +1,10 @@
+@media screen and (max-width: 600px) {
+  .header {
+    height: 300px;
+    display: block;
+  }
+  .container {
+    position: absolute;
+    top: 200px;
+  }
+}

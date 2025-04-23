@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
+import './create.css';
 
 function Create() {
   // Text area state
@@ -101,7 +102,7 @@ function Create() {
       </div>
 
       <div className="container">
-        <textarea style={{"position": "absolute", "top": "100px", "left": "0px", "width": "100%", "height": "calc(100vh - 250px)"}}
+        <textarea style={{"position": "absolute", "top": "100px", "left": "0px", "width": "100vw", "height": "calc(100vh - 250px)", "boxSizing": "border-box", "padding": "1em", "fontSize": "1.5em", "resize": "none"}}
                   onChange={handleTextChanged}
                   ref={textAreaRef}></textarea>
       </div>
