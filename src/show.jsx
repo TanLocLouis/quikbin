@@ -4,20 +4,12 @@ import { useEffect, useState } from "react";
 
 function Show() {
   const { id } = useParams();
-  const [text, setText] = useState("");
-  const [metadata, setMetadata] = useState({
-    id: "",
-    expireAfter: 0,
-    password: "",
-    createdAt: new Date().toISOString(),
-  });
-
+  const [data, setData] = useState({});
   useEffect(() => {
     const url = import.meta.env.VITE_SERVER + "get/" + id; 
     async function fetchData() {
       const response = await axios.get(url);
-      setText(response.data.text);
-      setMetadata(response.data.metadata);
+      setData(response.data);
     }
 
     fetchData();
@@ -37,7 +29,7 @@ function Show() {
   }
 
   const handleCopyText = () => {
-    navigator.clipboard.writeText(text).then(() => {
+    navigator.clipboard.writeText(data.text).then(() => {
       document.getElementById("copy-text").innerText = "Copied!";
     }, (err) => {
       console.error('Could not copy text: ', err);
@@ -57,13 +49,13 @@ function Show() {
         </div>
 
         <div style={{textAlign: "left", width: "1000px", margin: "0 auto", paddingTop: "1em"}}>
-            <h5 style={{margin: "0 0 0 1em"}}>Created at: {metadata.createdAt}</h5>
-            <h5 style={{margin: "0 0 0 1em"}}>Expire after: {metadata.expireAfter} hours</h5>
-            <h5 style={{margin: "0 0 0 1em"}}>ID: {metadata.id}</h5>
+            <h5 style={{margin: "0 0 0 1em"}}>Created at: {data.createdAt}</h5>
+            <h5 style={{margin: "0 0 0 1em"}}>Expire at: {data.closeBinAt} </h5>
+            <h5 style={{margin: "0 0 0 1em"}}>ID: {data.id}</h5>
             <button id="copy-link" style={{margin: "0 0 0 1em"}} onClick={handleCopyLink}>Copy Link</button>
             <button id="copy-text" style={{margin: "0 0 0 1em"}} onClick={handleCopyText}>Copy Text</button>
             <div>
-              <textarea style={{margin: "1em", padding: "1em", width: "100vw", height: "calc(100vh - 300px)"}} value={text}></textarea>
+              <textarea style={{margin: "1em", padding: "1em", width: "100vw", height: "calc(100vh - 300px)"}} value={data.text}></textarea>
             </div>
         </div>
     </div>

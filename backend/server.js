@@ -22,10 +22,7 @@ client.connect()
 app.post('/create', (req, res) => {
     const db = client.db('quikbin');
     const collection = db.collection('bins');
-    const bin = {
-        text: req.body.text,
-        metadata: req.body.metadata,
-    };
+    const bin = req.body.data;
 
     collection.insertOne(bin)
         .then(result => {
@@ -44,7 +41,8 @@ app.get('/get/:id', (req, res) => {
     const db = client.db('quikbin');
     const collection = db.collection('bins');
     const id = req.params.id;
-    collection.findOne({'metadata.id': id})
+    
+    collection.findOne({'id': id})
         .then(bin => {
             if (!bin) {
                 console.log('[STATUS] Bin not found', id);
