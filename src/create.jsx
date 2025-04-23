@@ -4,66 +4,79 @@ import axios from 'axios';
 import './create.css';
 
 function Create() {
-  // Text area state
-  const [text, setText]= useState("");
-  const handleTextChanged = (e) => {
-    setText(e.target.value);
-  }
+  const expireList = {
+    '1 minute': 60,
+    '15 minutes': 900,
+    '30 minutes': 1800,
+    '1 hour': 3600,
+    '6 hours': 21600,
+    '12 hours': 43200,
+    '24 hours': 86400,
+    'Never': 0,
+  };
 
-  // Metadata state
-  const [metadata, setMetadata] = useState({
+  const [data, setData]= useState({
+    text: "",
     id: uuidv4().slice(0, 8),
-    expireAfter: 1,
     password: "",
     createdAt: new Date().toISOString(),
+    closeBinAt: new Date(Date.now() + 1000 * expireList['15 minutes']).toISOString(), 
   });
-  const handleExpireChanged = (e) => {
-    setMetadata({
-      ...metadata,
-      expireAfter: e.target.value,
-    });
-  }
-  const handlePasswordChanged = (e) => {
-    setMetadata({
-      ...metadata,
-      password: e.target.value,
-    });
+
+  // Text area state
+  const handleTextChanged = (e) => {
+    setData({
+      ...data,
+      text: e.target.value,
+    })
   }
 
   // ID state
   const textAreaRef = useRef(null);
   const handleClear = () => {
-    setText("");
-    textAreaRef.current.value = "";
-    setMetadata({
-      id: uuidv4(),
-      expireAfter: 1,
-      password: "",
-      createdAt: new Date().toISOString(),
+    setData({
+      ...data,
+      text: "",
     });
   }
   const handleIDChanged = (e) => {
-    setMetadata({
-      ...metadata,
+    setData({
+      ...data,
       id: e.target.value,
-    });
+    })
+  }
+
+  // Expire state
+  const handleExpireChanged = (e) => {
+    const expire = e.target.value;
+    setData({
+      ...data,
+      closeBinAt: new Date(Date.now() + 1000 * expire).toISOString(),
+    })
+  }
+
+  // Password state
+  const handlePasswordChanged = (e) => {
+    setData({
+      ...data,
+      password: e.target.value,
+    })
   }
 
   useEffect(() => {
-    document.getElementById("header-id").value = metadata.id;
+    document.getElementById("header-id").value = data.id;
   }, []);
 
   // Handle create data
   const handleCreate = () => {
     const url = import.meta.env.VITE_SERVER + 'create';
-    axios.post(url, {
-      text: text,
-      metadata: metadata,
-    }).then((response) => {
-      location.href = import.meta.env.VITE_HOST + metadata.id.slice(0, 8);
+    axios.post(url, {data})
+    .then((response) => {
+      location.href = import.meta.env.VITE_HOST + data.id.slice(0, 8);
     })
   }
 
+  // Create new bin
   const handleNew = () => {
     location.reload();
   }
@@ -83,8 +96,8 @@ function Create() {
         <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
           <label style={{"margin": "0.5em", "marginBottom": "0em"}}>Expire after: </label>
           <select id="header-expire" onChange={handleExpireChanged}>
-            <option value="60">1 minutes</option>
-            <option value="900" selected>15 minutes</option>
+            <option value={expireList['1 minute']}>1 minutes</option>
+            <option value={expireList['15 minutes']} selected>15 minutes</option>
             <option value="1800">30 minutes</option>
             <option value="3600">1 hours</option>
             <option value="21600">6 hours</option>
