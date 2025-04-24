@@ -17,6 +17,12 @@ client.connect()
     .then(() => console.log('[STATUS] Connected to MongoDB'))
     .catch(err => console.error('[ERROR] Failed to connect to MongoDB', err));
 
+const bcrypt = require('bcrypt');
+async function hashPassword(plainPassword) {
+  const saltRounds = 10;
+  const hashed = await bcrypt.hash(plainPassword, saltRounds);
+  return hashed;
+}
 
 // Create a new bin
 app.post('/create', (req, res) => {
@@ -24,15 +30,37 @@ app.post('/create', (req, res) => {
     const collection = db.collection('bins');
     const bin = req.body.data;
 
-    collection.insertOne(bin)
-        .then(result => {
-            console.log('[STATUS] Bin created', result.insertedId);
-            res.status(201).json({ message: 'Bin created', id: result.insertedId });
-        })
-        .catch(err => {
-            console.error('[ERROR] Failed to create bin', err);
-            res.status(500).json({ message: 'Failed to create bin' });
-        });
+    // Check if user has set password
+    // If yes, hash it
+    if (bin['password'] !== '') {
+        hashPassword(bin['password'])
+        .then(hashed => {
+            bin['password'] = hashed;
+
+            collection.insertOne(bin)
+                .then(result => {
+                    console.log('[STATUS] Bin created', result.insertedId);
+                    res.status(201).json({ message: 'Bin created', id: result.insertedId });
+                })
+                .catch(err => {
+                    console.error('[ERROR] Failed to create bin', err);
+                    res.status(500).json({ message: 'Failed to create bin' });
+                });
+            }
+        );
+    // Or they not use password, just insert to bins
+    } else {
+            collection.insertOne(bin)
+                .then(result => {
+                    console.log('[STATUS] Bin created', result.insertedId);
+                    res.status(201).json({ message: 'Bin created', id: result.insertedId });
+                })
+                .catch(err => {
+                    console.error('[ERROR] Failed to create bin', err);
+                    res.status(500).json({ message: 'Failed to create bin' });
+                });
+
+    }
 });
 
 
@@ -48,8 +76,45 @@ app.get('/get/:id', (req, res) => {
                 console.log('[STATUS] Bin not found', id);
                 return res.status(404).json({ message: 'Bin not found' });
             }
-            console.log('[STATUS] Bin retrieved', bin);
-            res.status(200).json(bin);
+
+            // if bin not used password
+            // just return data
+            if (bin['password'] === '') {
+                console.log('[STATUS] Bin retrieved', bin);
+                return res.status(200).json(bin);
+            }
+            // if bin used,
+            // require to auth password
+            else {
+                // if user send password return ok
+                if (req.query && req.query.password) {
+                    bcrypt.compare(req.query.password, bin['password'], (err, result) => {
+                        if (err) {
+                            console.log('[STATUS] Bin retrieved, require password, error', err);
+                            return res.status(401).json(null);
+                        }
+
+                        // if right password
+                        // return bin data
+                        if (result) {
+                            console.log('[STATUS] Bin retrieved, require password, right password', bin);
+                            return res.status(200).json(bin);
+                        }
+                        // if wrong password
+                        // return 401
+                        // and require password again
+                        else {
+                            console.log('[STATUS] Bin retrieved, require password, wrong password');
+                            return res.status(401).json(null);
+                        }
+                    })
+                }
+                // if user not send require password
+                else {
+                    console.log('[STATUS] Bin retrieved, require password');
+                    return res.status(401).json(null);
+                }
+            }
         })
         .catch(err => {
             console.error('[ERROR] Failed to retrieve bin', err);
