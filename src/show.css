@@ -1,0 +1,19 @@
+
+.show-header {
+    --main-color: #646cffaa;
+    background-color: var(--main-color);
+}
+
+.show-textarea {
+    margin: 0;
+    margin-top: 1em;
+    padding: 1em;
+    width: 100%;
+    box-sizing: border-box;
+    height: calc(100vh - 300px);
+}
+
+.show-form {
+    margin-top: 1em;
+    background-color: var(--main-color);
+}
