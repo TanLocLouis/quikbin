@@ -1,6 +1,7 @@
 import { useParams } from "react-router";
 import axios from 'axios';
 import { useEffect, useState } from "react";
+import "./show.css";
 
 function Show() {
   const { id } = useParams();
@@ -15,6 +16,9 @@ function Show() {
       if (err.response) {
         if (err.response.status === 401) {
           document.getElementById("locked-bin").style.display = 'block';
+        } else if (err.response.status === 404) {
+          alert("Bin not found");
+          location.href = import.meta.env.VITE_HOST;
         }
       }
     }
@@ -42,6 +46,7 @@ function Show() {
     .then((response) => {
       const data = response.data;
       setData(data);
+      document.getElementById("locked-bin").style.display = 'none';
     })
     .catch((err) => {
       if (err.response.status === 401) {
@@ -54,8 +59,9 @@ function Show() {
 
   // Copies
   const handleCopyLink = () => {
-    const url = import.meta.env.VITE_HOST + data.id.slice(0, 8);
+    const url = import.meta.env.VITE_HOST + data.id;
     navigator.clipboard.writeText(url).then(() => {
+      console.log("OKKKKKK");
       document.getElementById("copy-link").innerText = "Copied!";
     }, (err) => {
       console.error('Could not copy text: ', err);
@@ -74,20 +80,20 @@ function Show() {
 
   return (
     <div className="App">
-        <div style={{marginBottom: "0px", padding: "1em", textAlign: "left"}}>
+        <div class="show-header" style={{marginBottom: "0px", padding: "1em", textAlign: "left"}}>
             <div style={{marginBottom: "1em"}}>
-                <h2 style={{marginBottom: "0px"}}>QuikBin</h2>
+                <h2 style={{margiddnBottom: "0px"}}>QuikBin</h2>
                 <h5 style={{marginTop: "0px", marginBottom: "0px"}}>Copyright 2020 - {curYear} @TanLocLouis</h5>
                 <button style={{margin: "1em 0 0 0"}} onClick={handleCreateAnother}>Create another</button>
             </div>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form class="show-form" onSubmit={handleSubmit}>
           <div id="locked-bin" style={{display: "none"}}>
             <div style={{display: "flex", flexDirection: "column"}}>
               <h5 style={{width: "300px", margin: "1em", textAlign: "left"}}>This bin has been locked</h5>
               <input style={{width: "300px", boxSizing: "border-box"}} onChange={handlePasswordChanged} placeholder="Type password"></input>
-              <button style={{width: "300px"}}>Submit</button>
+              <button style={{width: "300px"}}>Unlock</button>
             </div>
           </div>
         </form>
@@ -99,7 +105,7 @@ function Show() {
             <button id="copy-link" style={{margin: "0 0 0 1em"}} onClick={handleCopyLink}>Copy Link</button>
             <button id="copy-text" style={{margin: "0 0 0 1em"}} onClick={handleCopyText}>Copy Text</button>
             <div>
-              <textarea style={{margin: "1em", padding: "1em", width: "100vw", height: "calc(100vh - 300px)"}} value={data.text}></textarea>
+              <textarea class="show-textarea" value={data.text}></textarea>
             </div>
         </div>
     </div>
