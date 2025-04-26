@@ -17,7 +17,48 @@ This project offers a fast and lightweight solution for storing and sharing temp
 
 # 🧪 Getting Started with Development
 
-To run the frontend locally:
+## To run the frontend locally:
 
 ```bash
 npm run dev
+```
+
+## For the backend  
+Open new terminal:
+```bash
+cd backend
+node server.js
+```
+
+## For the database
+Use `mongodb` container
+```bash
+cd tools/mongodb
+sudo docker-compose up -d
+```
+
+# ✅ Production
+## To run the frontend  
+On main folder run:
+```bash
+sudo docker-compose up -d
+```
+
+## For the backend:
+```bash
+npm run build
+```
+This will create `/dist` folder which can be served by `Nginx`  
+To use `Nginx` in `Docker` run
+```bash
+cd backend
+sudo docker-compose up -d
+```
+
+## For MongoDB
+This will deploy a `mongodb` container
+```bash
+cd tools/mongodb
+sudo docker-compose up -d
+```
+
