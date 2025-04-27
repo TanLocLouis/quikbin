@@ -30,14 +30,18 @@ app.post('/create', (req, res) => {
     const collection = db.collection('bins');
     const bin = req.body.data;
 
+    // Set createdAt and closeBinAt
+    // createdAt is the time when the bin is created
+    // closeBinAt is the time when the bin will be closed
+    bin['createdAt'] = new Date(Date.now());
+    bin['closeBinAt'] = new Date(Date.now() + 1000 * bin.expireTime);
+
     // Check if user has set password
     // If yes, hash it
     if (bin['password'] !== '') {
         hashPassword(bin['password'])
         .then(hashed => {
             bin['password'] = hashed;
-            bin['createdAt'] = new Date(Date.now());
-            bin['closeBinAt'] = new Date(Date.now() + 1000 * bin.expireTime);
 
             collection.insertOne(bin)
                 .then(result => {
