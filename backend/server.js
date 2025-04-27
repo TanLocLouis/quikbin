@@ -36,6 +36,8 @@ app.post('/create', (req, res) => {
         hashPassword(bin['password'])
         .then(hashed => {
             bin['password'] = hashed;
+            bin['createdAt'] = new Date(Date.now());
+            bin['closeBinAt'] = new Date(Date.now() + 1000 * bin.expireTime);
 
             collection.insertOne(bin)
                 .then(result => {

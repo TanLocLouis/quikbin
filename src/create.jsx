@@ -19,8 +19,9 @@ function Create() {
     text: "",
     id: uuidv4().slice(0, 8),
     password: "",
-    createdAt: new Date().toISOString(),
-    closeBinAt: new Date(Date.now() + 1000 * expireList['15 minutes']).toISOString(), 
+    expireTime: expireList['15 minutes'],
+    createdAt: "",
+    closeBinAt: "",
   });
 
   // Text area state
@@ -51,7 +52,7 @@ function Create() {
     const expire = e.target.value;
     setData({
       ...data,
-      closeBinAt: new Date(Date.now() + 1000 * expire).toISOString(),
+      expireTime: expire,
     })
   }
 
