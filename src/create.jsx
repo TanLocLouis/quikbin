@@ -39,6 +39,8 @@ function Create() {
       ...data,
       text: "",
     });
+    textAreaRef.current.value = "";
+    textAreaRef.current.focus();
   }
   const handleIDChanged = (e) => {
     setData({
@@ -71,11 +73,13 @@ function Create() {
   // Handle create data
   const handleCreate = () => {
     const url = import.meta.env.VITE_SERVER + 'create';
-
     axios.post(url, {data})
     .then((response) => {
       location.href = import.meta.env.VITE_HOST + data.id.slice(0, 8);
     })
+    .catch((error) => {
+      console.log(error);
+    });
   }
 
   // Create new bin
