@@ -39,17 +39,23 @@ sudo docker-compose up -d
 
 # ✅ Production
 ## To run the frontend  
-On main folder run:
-```bash
-sudo docker-compose up -d
-```
-
-## For the backend:
 ```bash
 npm run build
 ```
 This will create `/dist` folder which can be served by `Nginx`  
-To use `Nginx` in `Docker` run
+Before use it, you need to change this folder permission.  
+```
+sudo chown root
+sudo chmod -R 705 dist
+```
+To use `Nginx` in `Docker` to deploy this.
+On main folder run:
+```bash
+sudo docker-compose up -d
+```
+**📌Note:** If you are using Cloudflare tunnel to host, sometime it needs to be cleaned cache to update to the latest version of website from Nginx.
+
+## For the backend:
 ```bash
 cd backend
 sudo docker-compose up -d
