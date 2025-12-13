@@ -25,7 +25,7 @@ function Show() {
   }
 
   useEffect(() => {
-    const url = import.meta.env.VITE_SERVER + "get/" + id; 
+    const url = import.meta.env.VITE_SERVER + "/get/" + id; 
     fetchData(url);
   }, []);
 
@@ -40,7 +40,7 @@ function Show() {
   }
   // Handle submit
   const handleSubmit = (e) => {
-    const url = import.meta.env.VITE_SERVER + 'get/' + id;
+    const url = import.meta.env.VITE_SERVER + '/get/' + id;
 
     axios.get(url, {params: {password}})
     .then((response) => {
@@ -59,7 +59,7 @@ function Show() {
 
   // Copies
   const handleCopyLink = () => {
-    const url = import.meta.env.VITE_HOST + data.id;
+    const url = import.meta.env.VITE_HOST + '/' + data.id;
     navigator.clipboard.writeText(url).then(() => {
       console.log("OKKKKKK");
       document.getElementById("copy-link").innerText = "Copied!";
@@ -79,12 +79,11 @@ function Show() {
   const curYear = new Date().getFullYear();
 
   return (
-    <div className="App">
+    <>
         <div class="show-header" style={{marginBottom: "0px", padding: "1em", textAlign: "left"}}>
             <div style={{marginBottom: "1em"}}>
                 <h2 style={{margiddnBottom: "0px"}}>QuikBin</h2>
-                <h5 style={{marginTop: "0px", marginBottom: "0px"}}>Copyright 2020 - {curYear} @TanLocLouis</h5>
-                <button style={{margin: "1em 0 0 0"}} onClick={handleCreateAnother}>Create another</button>
+                <button style={{margin: "0.5em 0 0 0"}} onClick={handleCreateAnother}>Create another</button>
             </div>
         </div>
 
@@ -98,17 +97,27 @@ function Show() {
           </div>
         </form>
 
-        <div style={{textAlign: "left", width: "1000px", margin: "0 auto", paddingTop: "1em"}}>
-            <h5 style={{margin: "0 0 0 1em"}}>Created at: {data.createdAt}</h5>
-            <h5 style={{margin: "0 0 0 1em"}}>Expire at: {data.closeBinAt} </h5>
-            <h5 style={{margin: "0 0 0 1em"}}>ID: {data.id}</h5>
-            <button id="copy-link" style={{margin: "0 0 0 1em"}} onClick={handleCopyLink}>Copy Link</button>
-            <button id="copy-text" style={{margin: "0 0 0 1em"}} onClick={handleCopyText}>Copy Text</button>
+        <div style={{textAlign: "left", width: "100%", margin: "0 auto"}}>
+            <div style={{margin: "0.5em 0 0 0.5em"}}>
+              <h5 style={{margin: "0"}}>Created at: {data.createdAt}</h5>
+              <h5 style={{margin: "0"}}>Expire at: {data.closeBinAt} </h5>
+              <h5 style={{margin: "0"}}>ID: {data.id}</h5>
+            </div>
+
+            <div style={{display: "flex", gap: "0.5em", margin: "0.5em 0 0 0.5em"}}>
+              <button id="copy-link" style={{margin: "0"}} onClick={handleCopyLink}>Copy Link</button>
+              <button id="copy-text" style={{margin: "0"}} onClick={handleCopyText}>Copy Text</button>
+            </div>
+
             <div>
               <textarea class="show-textarea" value={data.text}></textarea>
             </div>
         </div>
-    </div>
+
+        <div style={{"display": "flex", "justifyContent": "center", "alignItems": "center", "height": "75px", "backgroundColor": "var(--footer-color)"}}>
+          <label>Copyright 2025 - {curYear} @TanLocLouis</label>
+        </div>
+    </>
   );
 }
 

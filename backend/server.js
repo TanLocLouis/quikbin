@@ -8,10 +8,12 @@ app.use(express.json());
 
 require('dotenv').config();
 // Connect to MongoDB
-const uri = 'mongodb://' + 
-process.env.MONGO_DB_USERNAME + ':' + 
-process.env.MONGO_DB_PASSWORD +'@' + 
-process.env.MONGO_DB_HOST + ':27017/';
+// const uri = 'mongodb://' + 
+// process.env.MONGO_DB_USERNAME + ':' + 
+// process.env.MONGO_DB_PASSWORD +'@' + 
+// process.env.MONGO_DB_HOST + ':27017/';
+const uri = process.env.MONGO_DB_URL;
+
 const client = new MongoClient(uri);
 client.connect()
     .then(() => console.log('[STATUS] Connected to MongoDB'))
@@ -25,10 +27,23 @@ async function hashPassword(plainPassword) {
 }
 
 // Create a new bin
-app.post('/create', (req, res) => {
+app.post('/create', async (req, res) => {
     const db = client.db('quikbin');
     const collection = db.collection('bins');
     const bin = req.body.data;
+
+    // Check if pin ID is exists
+    const id = bin.id;
+    try {
+        const bin = await collection.findOne({'id': id})
+        if (bin) {
+            console.log('[STATUS] Bin ID already exists', id);
+            return res.status(400).json({ message: 'Bin ID already exists' });
+        }
+    } catch (err) {
+        console.error('[ERROR] Failed to retrieve bin', err);
+        return res.status(500).json({ message: 'Failed to retrieve bin' });
+    }
 
     // Set createdAt and closeBinAt
     // createdAt is the time when the bin is created
