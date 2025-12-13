@@ -72,13 +72,18 @@ function Create() {
 
   // Handle create data
   const handleCreate = () => {
-    const url = import.meta.env.VITE_SERVER + 'create';
+    const url = import.meta.env.VITE_SERVER + '/create';
     axios.post(url, {data})
     .then((response) => {
-      location.href = import.meta.env.VITE_HOST + data.id.slice(0, 8);
+      location.href = import.meta.env.VITE_HOST + '/' + data.id.slice(0, 8);
     })
     .catch((error) => {
       console.log(error);
+
+      if (error.status == 400) {
+        alert('ID already exists. Please choose another ID.');
+        return;
+      }
     });
   }
 
@@ -121,22 +126,23 @@ function Create() {
       </div>
 
       <div className="container">
-        <textarea style={{"position": "absolute", "top": "100px", "left": "0px", "width": "100vw", "height": "calc(100vh - 250px)", "boxSizing": "border-box", "padding": "1em", "fontSize": "1.5em", "resize": "none"}}
+        <div style={{"display": "flex", "justifyContent": "flex-start", "backgroundColor": "black"}}>
+          <button onClick={handleNew}>New</button>
+          <button style={{"display": "none"}}>Copy Link</button>
+          <button onClick={handleClear}>Clear</button>
+        </div>
+        <textarea style={{"width": "100vw", "height": "calc(100vh - 250px)", "boxSizing": "border-box", "padding": "1em", "fontSize": "1.5em", "resize": "none"}}
                   onChange={handleTextChanged}
                   ref={textAreaRef}></textarea>
       </div>
 
       <div className="footer">
-        <div className="footer-left">
-          <div>
-            <button onClick={handleNew}>New</button>
-            <button onClick={handleCreate}>Create</button>
-            <button style={{"display": "none"}}>Copy Link</button>
-            <button onClick={handleClear}>Clear</button>
-          </div>
-          <div>
-            <label>Copyright 2025 - {curYear} @TanLocLouis</label>
-          </div>
+        <div style={{"width": "100%", "padding": "0.5em"}}>
+          <button style={{"width": "100%", "margin": "0", "backgroundColor": "var(--main-color)"}}
+                  onClick={handleCreate}>Create</button>
+        </div>
+        <div style={{"display": "flex", "justifyContent": "center", "alignItems": "center"}}>
+          <label>Copyright 2025 - {curYear} @TanLocLouis</label>
         </div>
       </div>
     </>
