@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import axios from 'axios';
 import { useEffect, useState } from "react";
 import "./show.css";
@@ -8,9 +8,18 @@ function Show() {
   const [data, setData] = useState({});
   const [password, setPassword] = useState("");
 
+  const redirect = useNavigate();
+
   async function fetchData(url) {
     try {
       const response = await axios.get(url);
+      // console.log(response.data);
+      if (response.data.message === "Redirect") {
+        setData(response.data.bin);
+        // window.location.href = response.data.redirect;
+        return;
+      }
+
       setData(response.data);
     } catch (err) {
       if (err.response) {
@@ -18,7 +27,8 @@ function Show() {
           document.getElementById("locked-bin").style.display = 'block';
         } else if (err.response.status === 404) {
           alert("Bin not found");
-          location.href = import.meta.env.VITE_HOST;
+          // location.href = import.meta.env.VITE_HOST;
+          redirect("/");
         }
       }
     }
@@ -31,7 +41,8 @@ function Show() {
 
   // Handle create new bin
   const handleCreateAnother = () => {
-    location.href = import.meta.env.VITE_HOST;
+    // location.href = import.meta.env.VITE_HOST;
+    redirect("/");
   }
 
   // Handle locked password changed
@@ -76,6 +87,10 @@ function Show() {
     });
   }
 
+  const handleOpenLinkClicked = () => {
+    window.open(data.text, '_blank');
+  }
+
   const curYear = new Date().getFullYear();
 
   return (
@@ -90,8 +105,8 @@ function Show() {
         <form class="show-form" onSubmit={handleSubmit}>
           <div id="locked-bin" style={{display: "none"}}>
             <div style={{display: "flex", flexDirection: "column"}}>
-              <h5 style={{width: "300px", margin: "1em", textAlign: "left"}}>This bin has been locked</h5>
-              <input style={{width: "300px", boxSizing: "border-box"}} onChange={handlePasswordChanged} placeholder="Type password"></input>
+              <h5 style={{width: "300px", margin: "1em", color: "red", marginBottom: "0.5em", textAlign: "left"}}>Type password to unlock this bin</h5>
+              <input style={{width: "300px", boxSizing: "border-box", marginBottom: 0}} onChange={handlePasswordChanged} placeholder="Type password"></input>
               <button style={{width: "300px"}}>Unlock</button>
             </div>
           </div>
@@ -107,6 +122,10 @@ function Show() {
             <div style={{display: "flex", gap: "0.5em", margin: "0.5em 0 0 0.5em"}}>
               <button id="copy-link" style={{margin: "0"}} onClick={handleCopyLink}>Copy Link</button>
               <button id="copy-text" style={{margin: "0"}} onClick={handleCopyText}>Copy Text</button>
+            </div>
+
+            <div>
+              <button style={{width: "100%", backgroundColor: "var(--main-color)"}} onClick={handleOpenLinkClicked}>Open this Link</button>
             </div>
 
             <div>

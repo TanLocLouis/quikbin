@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import './create.css';
 import Switch from './components/Switch';
+import { useNavigate } from 'react-router';
 
 function Create() {
   const expireList = {
@@ -21,7 +22,9 @@ function Create() {
     text: "",
     password: "",
     expireTime: expireList['15 minutes'],
+    isShorternURL: false,
   });
+  const [checkShorternURL, setCheckShorternURL] = useState(false);
 
   // ID state
   const textAreaRef = useRef(null);
@@ -65,16 +68,27 @@ function Create() {
     })
   }
 
+  // Shortern URL state
+  const handleShorternURLChanged = (checked) => {
+    setCheckShorternURL(checked);
+    setData({
+      ...data,
+      isShorternURL: checked,
+    })
+  }
+
   useEffect(() => {
     document.getElementById("header-id").value = data.id;
   }, []);
 
+  const navigate = useNavigate();
   // Handle create data
   const handleCreate = () => {
     const url = import.meta.env.VITE_SERVER + '/create';
     axios.post(url, {data})
     .then((response) => {
-      location.href = import.meta.env.VITE_HOST + '/' + data.id.slice(0, 8);
+      // location.href = import.meta.env.VITE_HOST + '/' + data.id.slice(0, 8);
+      navigate('/' + data.id.slice(0, 8));
     })
     .catch((error) => {
       console.log(error);
@@ -129,7 +143,10 @@ function Create() {
           <button onClick={handleNew}>New</button>
           <button style={{"display": "none"}}>Copy Link</button>
           <button onClick={handleClear}>Clear</button>
-          <Switch />
+        </div>
+        <div style={{"display": "flex", "justifyContent": "flex-start", "alignItems": "center", "backgroundColor": "black"}} >
+          <Switch checked={checkShorternURL} onChange={handleShorternURLChanged}/>
+          <label>Shortern the text as URL</label>
         </div>
         <textarea style={{"width": "100vw", "height": "calc(100vh - 250px)", "boxSizing": "border-box", "padding": "1em", "fontSize": "1.5em", "resize": "none"}}
                   onChange={handleTextChanged}

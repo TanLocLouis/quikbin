@@ -3,7 +3,6 @@ function validateBin(req, res, next) {
     const idPattern = /^[a-zA-Z0-9_-]{4,20}$/; // Example pattern: alphanumeric, underscores, hyphens, 4-20 chars
 
     // Validate ID
-    console.log('[DEBUG] Validating Bin ID:', bin);
     if (!idPattern.test(bin.id)) {
         console.log('[STATUS] Invalid Bin ID format', bin.id);
         return res.status(400).json({ message: 'Invalid Bin ID format' });
