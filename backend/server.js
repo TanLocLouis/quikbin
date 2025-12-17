@@ -8,7 +8,7 @@ app.use(express.json());
 
 require('dotenv').config();
 const { validateBin } = require('./middleware/validate');
-
+const { hashPassword } = require('./middleware/password');
 
 // Connect to MongoDB
 // const uri = 'mongodb://' + 
@@ -23,11 +23,6 @@ client.connect()
     .catch(err => console.error('[ERROR] Failed to connect to MongoDB', err));
 
 const bcrypt = require('bcrypt');
-async function hashPassword(plainPassword) {
-  const saltRounds = 10;
-  const hashed = await bcrypt.hash(plainPassword, saltRounds);
-  return hashed;
-}
 
 // Create a new bin
 app.post('/create', validateBin, async (req, res) => {
@@ -35,11 +30,14 @@ app.post('/create', validateBin, async (req, res) => {
     const collection = db.collection('bins');
     const value = req.body.data;
 
+    // console.log('[DEBUG] Creating bin with data:', value);
+
     const bin = {
         id: value.id,
         text: value.text,
         password: value.password || '',
         expireTime: value.expireTime,
+        isShorternURL: value.isShorternURL,
     };
 
     // Check if pin ID is exists
@@ -112,39 +110,43 @@ app.get('/get/:id', (req, res) => {
             // just return data
             if (bin['password'] === '') {
                 console.log('[STATUS] Bin retrieved', bin);
+                if (bin.isShorternURL) {
+                    return res.status(200).json(
+                        { 
+                            message: 'Redirect',
+                            redirect: bin.text,
+                            bin: bin
+                        }
+                    )
+                }
+
                 return res.status(200).json(bin);
             }
             // if bin used,
             // require to auth password
             else {
-                // if user send password return ok
-                if (req.query && req.query.password) {
-                    bcrypt.compare(req.query.password, bin['password'], (err, result) => {
-                        if (err) {
-                            console.log('[STATUS] Bin retrieved, require password, error', err);
-                            return res.status(401).json(null);
-                        }
+                // Bin requires password authentication
+                const { comparePassword } = require('./middleware/password');
+                
+                if (!req.query || !req.query.password) {
+                    console.log('[STATUS] Bin retrieved, password required');
+                    return res.status(401).json({ message: 'Password required' });
+                }
 
-                        // if right password
-                        // return bin data
-                        if (result) {
-                            console.log('[STATUS] Bin retrieved, require password, right password', bin);
+                comparePassword(req.query.password, bin['password'])
+                    .then(isMatch => {
+                        if (isMatch) {
+                            console.log('[STATUS] Bin retrieved, password authenticated');
                             return res.status(200).json(bin);
-                        }
-                        // if wrong password
-                        // return 401
-                        // and require password again
-                        else {
-                            console.log('[STATUS] Bin retrieved, require password, wrong password');
-                            return res.status(401).json(null);
+                        } else {
+                            console.log('[STATUS] Bin retrieved, invalid password');
+                            return res.status(401).json({ message: 'Invalid password' });
                         }
                     })
-                }
-                // if user not send require password
-                else {
-                    console.log('[STATUS] Bin retrieved, require password');
-                    return res.status(401).json(null);
-                }
+                    .catch(err => {
+                        console.error('[ERROR] Password comparison error', err);
+                        return res.status(401).json({ message: 'Authentication failed' });
+                    })
             }
         })
         .catch(err => {

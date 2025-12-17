@@ -79,6 +79,7 @@ button:focus-visible {
 
 input, select {
   margin: 0.5em;
+  margin-top: 0.2em;
 
   max-width: 1000px;
   border-radius: 8px;
