@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import './create.css';
+import Switch from './components/Switch';
 
 function Create() {
   const expireList = {
@@ -16,21 +17,11 @@ function Create() {
   };
 
   const [data, setData]= useState({
-    text: "",
     id: uuidv4().slice(0, 8),
+    text: "",
     password: "",
     expireTime: expireList['15 minutes'],
-    createdAt: "",
-    closeBinAt: "",
   });
-
-  // Text area state
-  const handleTextChanged = (e) => {
-    setData({
-      ...data,
-      text: e.target.value,
-    })
-  }
 
   // ID state
   const textAreaRef = useRef(null);
@@ -46,6 +37,14 @@ function Create() {
     setData({
       ...data,
       id: e.target.value,
+    })
+  }
+
+  // Text area state
+  const handleTextChanged = (e) => {
+    setData({
+      ...data,
+      text: e.target.value,
     })
   }
 
@@ -81,7 +80,7 @@ function Create() {
       console.log(error);
 
       if (error.status == 400) {
-        alert('ID already exists. Please choose another ID.');
+        alert(error.response.data.message);
         return;
       }
     });
@@ -130,6 +129,7 @@ function Create() {
           <button onClick={handleNew}>New</button>
           <button style={{"display": "none"}}>Copy Link</button>
           <button onClick={handleClear}>Clear</button>
+          <Switch />
         </div>
         <textarea style={{"width": "100vw", "height": "calc(100vh - 250px)", "boxSizing": "border-box", "padding": "1em", "fontSize": "1.5em", "resize": "none"}}
                   onChange={handleTextChanged}
