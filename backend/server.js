@@ -7,6 +7,9 @@ app.use(cors());
 app.use(express.json());
 
 require('dotenv').config();
+const { validateBin } = require('./middleware/validate');
+
+
 // Connect to MongoDB
 // const uri = 'mongodb://' + 
 // process.env.MONGO_DB_USERNAME + ':' + 
@@ -27,10 +30,17 @@ async function hashPassword(plainPassword) {
 }
 
 // Create a new bin
-app.post('/create', async (req, res) => {
+app.post('/create', validateBin, async (req, res) => {
     const db = client.db('quikbin');
     const collection = db.collection('bins');
-    const bin = req.body.data;
+    const value = req.body.data;
+
+    const bin = {
+        id: value.id,
+        text: value.text,
+        password: value.password || '',
+        expireTime: value.expireTime,
+    };
 
     // Check if pin ID is exists
     const id = bin.id;
