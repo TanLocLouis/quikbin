@@ -1,6 +1,14 @@
 .show-header {
-    --main-color: #646cffaa;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    height: 100px;
     background-color: var(--main-color);
+}
+
+.show-header-icon:hover {
+    cursor: pointer;
 }
 
 .show-textarea {
@@ -8,8 +16,7 @@
     margin-top: 1em;
     padding: 1em;
     width: 100%;
-    box-sizing: border-box;
-    height: calc(100vh - 300px);
+    height: calc(100vh - 500px);
 }
 
 .show-form {

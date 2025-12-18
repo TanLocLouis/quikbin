@@ -1,0 +1,12 @@
+.top-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    height: 50px;
+    background-color: var(--container-color);
+}
+
+.top-header:hover {
+    cursor: pointer;
+}

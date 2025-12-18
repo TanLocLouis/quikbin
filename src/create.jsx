@@ -3,7 +3,10 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import './create.css';
 import Switch from './components/Switch';
+import Footer from './components/Footer/Footer';
 import { useNavigate } from 'react-router';
+import AutoResizeTextarea from './components/AutoResizeTextarea';
+import TopHeader from './components/TopHeader/TopHeader';
 
 function Create() {
   const expireList = {
@@ -104,10 +107,11 @@ function Create() {
   const handleNew = () => {
     location.reload();
   }
-  const curYear = new Date().getFullYear();
 
   return (
     <>
+      <TopHeader />
+
       <div className="header">
         <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
           <label style={{"margin": "0.5em", "marginBottom": "0em"}}>ID: </label>
@@ -139,29 +143,43 @@ function Create() {
       </div>
 
       <div className="container">
-        <div style={{"display": "flex", "justifyContent": "flex-start", "backgroundColor": "black"}}>
-          <button onClick={handleNew}>New</button>
-          <button style={{"display": "none"}}>Copy Link</button>
-          <button onClick={handleClear}>Clear</button>
+        <div className="container-form">
+          <div>
+            {/* <div style={{"display": "flex", "justifyContent": "flex-start"}}>
+              <button onClick={handleNew}>New</button>
+              <button style={{"display": "none"}}>Copy Link</button>
+              <button
+                style={{"marginLeft": "0"}} 
+                onClick={handleClear}>Clear</button>
+            </div> */}
+          </div>
+
+          {/* <hr></hr> */}
+
+          <div style={{"height": "100%"}}>
+            <div style={{"display": "flex", "justifyContent": "flex-start", "alignItems": "center"}} >
+              <Switch checked={checkShorternURL} onChange={handleShorternURLChanged}/>
+              <label>Make this as ShortenURL</label>
+            </div>
+            {/* <textarea style={{"width": "100%", "height": "100%", "boxSizing": "border-box", "padding": "1em", "fontSize": "1.5em", "resize": "none", "borderRadius": "8px"}}
+                      onChange={handleTextChanged}
+                      ref={textAreaRef}></textarea> */}
+            <AutoResizeTextarea 
+              value={data.text}
+              onChange={handleTextChanged}
+              placeholder="Your text here..."
+            />
+          </div>
+
+          <div style={{"width": "100%", "marginTop": "0.5em"}}>
+              <button style={{"width": "100%", "margin": "0", "backgroundColor": "var(--main-color)", "color": "white"}}
+                      onClick={handleCreate}>Create</button>
+          </div>
         </div>
-        <div style={{"display": "flex", "justifyContent": "flex-start", "alignItems": "center", "backgroundColor": "black"}} >
-          <Switch checked={checkShorternURL} onChange={handleShorternURLChanged}/>
-          <label>Shortern the text as URL</label>
-        </div>
-        <textarea style={{"width": "100vw", "height": "calc(100vh - 250px)", "boxSizing": "border-box", "padding": "1em", "fontSize": "1.5em", "resize": "none"}}
-                  onChange={handleTextChanged}
-                  ref={textAreaRef}></textarea>
+
       </div>
 
-      <div className="footer">
-        <div style={{"width": "100%", "padding": "0.5em"}}>
-          <button style={{"width": "100%", "margin": "0", "backgroundColor": "var(--main-color)"}}
-                  onClick={handleCreate}>Create</button>
-        </div>
-        <div style={{"display": "flex", "justifyContent": "center", "alignItems": "center"}}>
-          <label>Copyright 2025 - {curYear} @TanLocLouis</label>
-        </div>
-      </div>
+      <Footer />
     </>
   )
 }

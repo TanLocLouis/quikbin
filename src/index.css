@@ -10,13 +10,25 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: var(--container-color);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --main-color: #646cffaa;
+  --container-color: #2a2a2a;
+  --footer-color: #2a2a2a;
+  --background-color: #242424;
+}
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+
+  background-color: var(--background-color);
 }
 
 a {
@@ -26,13 +38,6 @@ a {
 }
 a:hover {
   color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
 }
 
 h1 {
@@ -50,10 +55,11 @@ button {
   font-family: inherit;
   background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: ease-in-out 0.25s;
 }
 button:hover {
   border-color: #646cff;
+  scale: 1.02;
 }
 button:focus,
 button:focus-visible {
@@ -63,7 +69,9 @@ button:focus-visible {
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
-    background-color: #ffffff;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: white;
   }
   a:hover {
     color: #747bff;
@@ -74,8 +82,11 @@ button:focus-visible {
   input, select, label {
     color: #ffffff;
   }
+  textarea {
+    background-color: var(--container-color);
+    color: white;
+  }
 }
-
 
 input, select {
   margin: 0.5em;
@@ -90,4 +101,7 @@ input, select {
   font-family: inherit;
   background-color: #1a1a1a;
   cursor: pointer;
+}
+
+textarea {
 }
