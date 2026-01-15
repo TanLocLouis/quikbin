@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "react";
 
-export function AutoResizeTextarea({
+const AutoResizeTextarea = ({
   value,
   onChange,
   minHeight = 100,
   maxHeight = 300,
   ...props
-}) {
+}) => {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -44,6 +44,5 @@ export function AutoResizeTextarea({
     />
   );
 }
-
 
 export default AutoResizeTextarea;

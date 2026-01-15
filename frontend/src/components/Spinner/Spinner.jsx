@@ -1,7 +1,7 @@
-export function LoadingSpinner({
+const LoadingSpinner = ({
   size = 200,
   color = "var(--main-color)",
-}) {
+}) => {
   return (
     <>
         <img 
@@ -18,3 +18,5 @@ export function LoadingSpinner({
     </>
   );
 }
+
+export default LoadingSpinner;

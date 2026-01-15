@@ -1,10 +1,13 @@
 import { useNavigate, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import axios from 'axios';
-import "./show.css";
-import Footer from "./components/Footer/Footer";
-import TopHeader from "./components/TopHeader/TopHeader";
-import { LoadingSpinner } from "./components/Spinner";
+import "./Show.css";
+
+import Footer from "@/components/Footer/Footer";
+import TopHeader from "@/components/TopHeader/TopHeader";
+import LoadingSpinner from "@/components/Spinner/Spinner";
+import Button from "../../components/Button/Button";
+import { useToast } from "../../contexts/ToastContext";
 
 function Show() {
   const { id } = useParams();
@@ -12,17 +15,17 @@ function Show() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const { addToast } = useToast();
+
   const redirect = useNavigate();
 
   async function fetchData(url) {
     setIsLoading(true);
     try {
       const response = await axios.get(url);
-      // console.log(response.data);
       if (response.data.message === "Redirect") {
         setData(response.data.bin);
         setIsLoading(false);
-        // window.location.href = response.data.redirect;
         return;
       }
 
@@ -33,8 +36,7 @@ function Show() {
         if (err.response.status === 401) {
           document.getElementById("locked-bin").style.display = 'block';
         } else if (err.response.status === 404) {
-          alert("Bin not found");
-          // location.href = import.meta.env.VITE_HOST;
+          addToast("error", "Bin not found");
           redirect("/");
         }
       }
@@ -42,13 +44,12 @@ function Show() {
   }
 
   useEffect(() => {
-    const url = import.meta.env.VITE_SERVER + "/get/" + id; 
+    const url = import.meta.env.VITE_SERVER + "/" + id; 
     fetchData(url);
   }, []);
 
   // Handle create new bin
   const handleCreateAnother = () => {
-    // location.href = import.meta.env.VITE_HOST;
     redirect("/");
   }
 
@@ -70,7 +71,8 @@ function Show() {
     })
     .catch((err) => {
       if (err.response.status === 401) {
-        alert("Wrong password");
+        addToast("error", "Wrong password");
+        setIsLoading(false);
       }
     })
 
@@ -79,20 +81,17 @@ function Show() {
 
   // Copies
   const handleCopyLink = () => {
+    addToast("info", "Link copied to clipboard");
     const url = import.meta.env.VITE_HOST + '/' + data.id;
     navigator.clipboard.writeText(url).then(() => {
-      console.log("OKKKKKK");
-      document.getElementById("copy-link").innerText = "Copied!";
     }, (err) => {
-      console.error('Could not copy text: ', err);
     });
   }
 
   const handleCopyText = () => {
+    addToast("info", "Text copied to clipboard");
     navigator.clipboard.writeText(data.text).then(() => {
-      document.getElementById("copy-text").innerText = "Copied!";
     }, (err) => {
-      console.error('Could not copy text: ', err);
     });
   }
 
@@ -142,14 +141,30 @@ function Show() {
 
             <div style={{textAlign: "left", width: "100%", margin: "0 auto"}}>
                 <div style={{margin: "0.5em 0 0 0"}}>
-                  <h5 style={{margin: "0"}}>ID: {data.id}</h5>
-                  <h5 style={{margin: "0"}}>Created at: {convertUTCToLocal(data.createdAt)}</h5>
+                  <h5 style={{margin: "0 0 0.3em 0"}}>ID: {data.id}</h5>
+                  <h5 style={{margin: "0 0 0.3em 0"}}>Created at: {convertUTCToLocal(data.createdAt)}</h5>
                   <h5 style={{margin: "0"}}>Expire at: {convertUTCToLocal(data.closeBinAt)} </h5>
                 </div>
 
-                <div style={{display: "flex", gap: "0.5em", margin: "0.5em 0 0.5em 0"}}>
-                  <button id="copy-link" style={{margin: "0"}} onClick={handleCopyLink}>Copy Link</button>
-                  <button id="copy-text" style={{margin: "0"}} onClick={handleCopyText}>Copy Text</button>
+                <div style={{display: "flex", gap: "0.5em", margin: "0.2em 0 1em 0"}}>
+                  <Button width="100%"
+                          height="50px"
+                          margin="0.5em 0.2em 0 0"
+                          title="Copy Link"
+                          color="white"
+                          backgroundColor="var(--main-color)"
+                          onClick={handleCopyLink}
+                          >
+                  </Button>
+                  <Button width="100%"
+                          height="50px"
+                          margin="0.5em 0 0 0.2em"
+                          title="Copy Text"
+                          color="white"
+                          backgroundColor="var(--main-color)"
+                          onClick={handleCopyText}
+                          >
+                  </Button>
                 </div>
 
                 <hr></hr>
@@ -162,9 +177,15 @@ function Show() {
                     /> */}
                   </div>
 
-                  <div>
-                    <button type="button" style={{width: "100%", margin: 0, marginTop: "0.5em", backgroundColor: "var(--main-color)"}} onClick={handleOpenLinkClicked}>Open this Link</button>
-                  </div>
+                  <Button width="100%"
+                          height="50px"
+                          margin="0.5em 0 0 0"
+                          title="Open this Link"
+                          color="white"
+                          backgroundColor="var(--main-color)"
+                          onClick={handleOpenLinkClicked}
+                          >
+                  </Button>
                 </div>
             </div>
           </div>

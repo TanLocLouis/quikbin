@@ -7,7 +7,7 @@ import { useMemo, useState } from 'react';
  * - Accessible: role="switch", aria-checked, keyboard/touch/mouse
  * - Sizes: sm | md | lg
  */
-export default function Switch({
+const Switch = ({
 	checked,
 	defaultChecked = false,
 	onChange,
@@ -20,7 +20,7 @@ export default function Switch({
 	inactiveColor = '#e5e7eb',
 	knobColor = '#ffffff',
 	ariaLabel, // when no visible label is provided
-}) {
+}) => {
 	const isControlled = typeof checked === 'boolean';
 	const [internal, setInternal] = useState(defaultChecked);
 	const isOn = isControlled ? checked : internal;
@@ -118,3 +118,4 @@ export default function Switch({
 	);
 }
 
+export default Switch;

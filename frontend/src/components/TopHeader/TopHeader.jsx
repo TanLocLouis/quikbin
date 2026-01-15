@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router";
 import "./TopHeader.css";
 
-function TopHeader() {
+const TopHeader = () => {
 
     const redirect = useNavigate();
     const handleLogoClicked = () => {

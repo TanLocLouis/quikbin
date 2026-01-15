@@ -1,12 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import axios from 'axios';
-import './create.css';
-import Switch from './components/Switch';
-import Footer from './components/Footer/Footer';
 import { useNavigate } from 'react-router';
-import AutoResizeTextarea from './components/AutoResizeTextarea';
-import TopHeader from './components/TopHeader/TopHeader';
+import { v4 as uuidv4, validate } from 'uuid';
+import axios from 'axios';
+import './Create.css';
+
+import Switch from '@/components/Switch/Switch';
+import Footer from '../../components/Footer/Footer';
+import AutoResizeTextarea from '@/components/AutoResizeTextarea/AutoResizeTextarea';
+import TopHeader from '@/components/TopHeader/TopHeader';
+import Button from '../../components/Button/Button';
+
+import { useToast } from '../../contexts/ToastContext';
 
 function Create() {
   const expireList = {
@@ -20,6 +24,8 @@ function Create() {
     'Never': 0,
   };
 
+  const { addToast } = useToast();
+
   const [data, setData]= useState({
     id: uuidv4().slice(0, 8),
     text: "",
@@ -29,7 +35,6 @@ function Create() {
   });
   const [checkShorternURL, setCheckShorternURL] = useState(false);
 
-  // ID state
   const textAreaRef = useRef(null);
   const handleClear = () => {
     setData({
@@ -39,18 +44,62 @@ function Create() {
     textAreaRef.current.value = "";
     textAreaRef.current.focus();
   }
+
+  useEffect(() => {
+    document.getElementById("header-id").value = data.id;
+  }, []);
+
+  // ID state
+  const validateId = (id) => {
+    if (!id) {
+      addToast("warning", "ID cannot be empty");
+      return false;
+    }
+
+    if (id.length > 20) {
+      addToast("warning", "ID cannot be longer than 20 characters");
+      return false;
+    }
+
+    if (/[^a-zA-Z0-9-_]/.test(id)) {
+      addToast("warning", "ID can only contain letters, numbers, hyphens, and underscores");
+      return false;
+    }
+
+    return true;
+  }
+
   const handleIDChanged = (e) => {
+    const id = e.target.value;
+    if (!validateId(id)) return;
+
     setData({
       ...data,
-      id: e.target.value,
+      id: id,
     })
   }
 
   // Text area state
+  const validateText = (text) => {
+    if (!text) {
+      addToast("warning", "Text cannot be empty");
+      return false;
+    }
+
+    if (text.length > 100000) {
+      addToast("warning", "Text cannot be longer than 100000 characters");
+      return false;
+    }
+
+    return true;
+  }
+
   const handleTextChanged = (e) => {
+    const text = e.target.value;
+
     setData({
       ...data,
-      text: e.target.value,
+      text: text,
     })
   }
 
@@ -64,7 +113,29 @@ function Create() {
   }
 
   // Password state
+  const validatePassword = (password) => {
+    if (!password) {
+      addToast("warning", "Password cannot be empty");
+      return false;
+    }
+
+    if (password.length > 50) {
+      addToast("warning", "Password cannot be longer than 50 characters");
+      return false;
+    }
+
+    if (/[^a-zA-Z0-9-_]/.test(password)) {
+      addToast("warning", "Password can only contain letters, numbers, hyphens, and underscores");
+      return false;
+    }
+
+    return true;
+  }
+
   const handlePasswordChanged = (e) => {
+    const password = e.target.value;
+    if (!validatePassword(password)) return;
+
     setData({
       ...data,
       password: e.target.value,
@@ -80,24 +151,27 @@ function Create() {
     })
   }
 
-  useEffect(() => {
-    document.getElementById("header-id").value = data.id;
-  }, []);
-
-  const navigate = useNavigate();
   // Handle create data
+  const navigate = useNavigate();
   const handleCreate = () => {
+    
+    const isValidInput = validateId(data.id)
+    && validateText(data.text)
+    && (data.password ? validatePassword(data.password) : true);
+
+    if (!isValidInput) {
+      addToast("error", "Please fix the errors before creating the bin");
+      return;
+    }
+
     const url = import.meta.env.VITE_SERVER + '/create';
     axios.post(url, {data})
     .then((response) => {
-      // location.href = import.meta.env.VITE_HOST + '/' + data.id.slice(0, 8);
       navigate('/' + data.id.slice(0, 8));
     })
     .catch((error) => {
-      console.log(error);
-
       if (error.status == 400) {
-        alert(error.response.data.message);
+        addToast("warning", error.response.data.message);
         return;
       }
     });
@@ -121,6 +195,7 @@ function Create() {
                   placeholder='ID'
                   required></input>
         </div>
+        
         <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
           <label style={{"margin": "0.5em", "marginBottom": "0em"}}>Expire after: </label>
           <select id="header-expire" onChange={handleExpireChanged}>
@@ -134,6 +209,7 @@ function Create() {
             <option value="Never">Never</option>
           </select>
         </div>
+
         <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
           <label style={{"margin": "0.5em", "marginBottom": "0em"}}> Password: </label>
           <input type="password" 
@@ -161,22 +237,30 @@ function Create() {
               <Switch checked={checkShorternURL} onChange={handleShorternURLChanged}/>
               <label>Make this as ShortenURL</label>
             </div>
-            {/* <textarea style={{"width": "100%", "height": "100%", "boxSizing": "border-box", "padding": "1em", "fontSize": "1.5em", "resize": "none", "borderRadius": "8px"}}
-                      onChange={handleTextChanged}
-                      ref={textAreaRef}></textarea> */}
+
             <AutoResizeTextarea 
+              minHeight={200}
               value={data.text}
               onChange={handleTextChanged}
               placeholder="Your text here..."
             />
           </div>
 
-          <div style={{"width": "100%", "marginTop": "0.5em"}}>
+          {/* <div style={{"width": "100%", "marginTop": "0.5em"}}>
               <button style={{"width": "100%", "margin": "0", "backgroundColor": "var(--main-color)", "color": "white"}}
                       onClick={handleCreate}>Create</button>
-          </div>
-        </div>
+          </div> */}
 
+          <Button width="100%"
+                  height="50px"
+                  margin="0.5em 0 0 0"
+                  title="Create"
+                  color="white"
+                  backgroundColor="var(--main-color)"
+                  onClick={handleCreate}
+                  >
+          </Button>
+        </div>
       </div>
 
       <Footer />
