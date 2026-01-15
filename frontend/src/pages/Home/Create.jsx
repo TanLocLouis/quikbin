@@ -5,9 +5,7 @@ import axios from 'axios';
 import './Create.css';
 
 import Switch from '@/components/Switch/Switch';
-import Footer from '../../components/Footer/Footer';
 import AutoResizeTextarea from '@/components/AutoResizeTextarea/AutoResizeTextarea';
-import TopHeader from '@/components/TopHeader/TopHeader';
 import Button from '../../components/Button/Button';
 
 import { useToast } from '../../contexts/ToastContext';
@@ -119,6 +117,11 @@ function Create() {
       return false;
     }
 
+    if (password.length < 8) {
+      addToast("warning", "Password must be at least 8 characters");
+      return false;
+    }
+
     if (password.length > 50) {
       addToast("warning", "Password cannot be longer than 50 characters");
       return false;
@@ -184,86 +187,84 @@ function Create() {
 
   return (
     <>
-      <TopHeader />
-
-      <div className="header">
-        <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
-          <label style={{"margin": "0.5em", "marginBottom": "0em"}}>ID: </label>
-          <input  id="header-id" 
-                  type="text" 
-                  onChange={handleIDChanged}
-                  placeholder='ID'
-                  required></input>
-        </div>
-        
-        <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
-          <label style={{"margin": "0.5em", "marginBottom": "0em"}}>Expire after: </label>
-          <select id="header-expire" onChange={handleExpireChanged}>
-            <option value={expireList['1 minute']}>1 minutes</option>
-            <option value={expireList['15 minutes']} selected>15 minutes</option>
-            <option value="1800">30 minutes</option>
-            <option value="3600">1 hours</option>
-            <option value="21600">6 hours</option>
-            <option value="43200">12 hours</option>
-            <option value="86400">24 hours</option>
-            <option value="Never">Never</option>
-          </select>
-        </div>
-
-        <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
-          <label style={{"margin": "0.5em", "marginBottom": "0em"}}> Password: </label>
-          <input type="password" 
-                  onChange={handlePasswordChanged}
-                  placeholder='Optional'></input>
-        </div>
-      </div>
-
-      <div className="container">
-        <div className="container-form">
-          <div>
-            {/* <div style={{"display": "flex", "justifyContent": "flex-start"}}>
-              <button onClick={handleNew}>New</button>
-              <button style={{"display": "none"}}>Copy Link</button>
-              <button
-                style={{"marginLeft": "0"}} 
-                onClick={handleClear}>Clear</button>
-            </div> */}
+      <div className="create-wrapper">
+        <div className="header">
+          <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
+            <label style={{"margin": "0.5em", "marginBottom": "0em"}}>ID: </label>
+            <input  id="header-id" 
+                    type="text" 
+                    onChange={handleIDChanged}
+                    placeholder='ID'
+                    required></input>
+          </div>
+          
+          <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
+            <label style={{"margin": "0.5em", "marginBottom": "0em"}}>Expire after: </label>
+            <select id="header-expire" onChange={handleExpireChanged}>
+              <option value={expireList['1 minute']}>1 minutes</option>
+              <option value={expireList['15 minutes']} selected>15 minutes</option>
+              <option value="1800">30 minutes</option>
+              <option value="3600">1 hours</option>
+              <option value="21600">6 hours</option>
+              <option value="43200">12 hours</option>
+              <option value="86400">24 hours</option>
+              <option value="Never">Never</option>
+            </select>
           </div>
 
-          {/* <hr></hr> */}
+          <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
+            <label style={{"margin": "0.5em", "marginBottom": "0em"}}> Password: </label>
+            <input type="password" 
+                    onChange={handlePasswordChanged}
+                    placeholder='Optional'></input>
+          </div>
+        </div>
 
-          <div style={{"height": "100%"}}>
-            <div style={{"display": "flex", "justifyContent": "flex-start", "alignItems": "center"}} >
-              <Switch checked={checkShorternURL} onChange={handleShorternURLChanged}/>
-              <label>Make this as ShortenURL</label>
+        <div className="container">
+          <div className="container-form">
+            <div>
+              {/* <div style={{"display": "flex", "justifyContent": "flex-start"}}>
+                <button onClick={handleNew}>New</button>
+                <button style={{"display": "none"}}>Copy Link</button>
+                <button
+                  style={{"marginLeft": "0"}} 
+                  onClick={handleClear}>Clear</button>
+              </div> */}
             </div>
 
-            <AutoResizeTextarea 
-              minHeight={200}
-              value={data.text}
-              onChange={handleTextChanged}
-              placeholder="Your text here..."
-            />
+            {/* <hr></hr> */}
+
+            <div style={{"height": "100%"}}>
+              <div style={{"display": "flex", "justifyContent": "flex-start", "alignItems": "center"}} >
+                <Switch checked={checkShorternURL} onChange={handleShorternURLChanged}/>
+                <label>Make this as ShortenURL</label>
+              </div>
+
+              <AutoResizeTextarea 
+                minHeight={200}
+                value={data.text}
+                onChange={handleTextChanged}
+                placeholder="Your text here..."
+              />
+            </div>
+
+            {/* <div style={{"width": "100%", "marginTop": "0.5em"}}>
+                <button style={{"width": "100%", "margin": "0", "backgroundColor": "var(--main-color)", "color": "white"}}
+                        onClick={handleCreate}>Create</button>
+            </div> */}
+
+            <Button width="100%"
+                    height="50px"
+                    margin="0.5em 0 0 0"
+                    title="Create"
+                    color="white"
+                    backgroundColor="var(--main-color)"
+                    onClick={handleCreate}
+                    >
+            </Button>
           </div>
-
-          {/* <div style={{"width": "100%", "marginTop": "0.5em"}}>
-              <button style={{"width": "100%", "margin": "0", "backgroundColor": "var(--main-color)", "color": "white"}}
-                      onClick={handleCreate}>Create</button>
-          </div> */}
-
-          <Button width="100%"
-                  height="50px"
-                  margin="0.5em 0 0 0"
-                  title="Create"
-                  color="white"
-                  backgroundColor="var(--main-color)"
-                  onClick={handleCreate}
-                  >
-          </Button>
         </div>
       </div>
-
-      <Footer />
     </>
   )
 }

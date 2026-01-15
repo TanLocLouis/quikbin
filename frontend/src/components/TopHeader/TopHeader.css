@@ -3,6 +3,12 @@
     flex-direction: column;
     justify-content: center;
 
+    width: 100%;    
+
+    position: fixed;
+    top: 0;
+    z-index: 1;
+
     height: 50px;
     background-color: var(--container-color);
 }

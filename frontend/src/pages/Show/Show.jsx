@@ -1,10 +1,7 @@
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import { useEffect, useState } from "react";
-import axios from 'axios';
 import "./Show.css";
 
-import Footer from "@/components/Footer/Footer";
-import TopHeader from "@/components/TopHeader/TopHeader";
 import LoadingSpinner from "@/components/Spinner/Spinner";
 import Button from "../../components/Button/Button";
 import { useToast } from "../../contexts/ToastContext";
@@ -14,69 +11,112 @@ function Show() {
   const [data, setData] = useState({});
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showLockedForm, setShowLockedForm] = useState(false);
 
   const { addToast } = useToast();
 
-  const redirect = useNavigate();
+  // Check if bin is locked 
+  const checkPassword = async () => {
+    const url = import.meta.env.VITE_SERVER + '/is-locked/' + id;
+    try {
+      const response  = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
 
-  async function fetchData(url) {
+      const data = await response.json();
+      return data.message;
+    } catch (err) {
+      if (err.status === 404) {
+        addToast("error", "Bin not found");
+      }
+      addToast("error", "Failed to check bin status");
+      return err;
+    }
+  }
+
+  // Fetching data
+  const fetchWithoutPassword = async () => {
+    const url = import.meta.env.VITE_SERVER + '/' + id + '/no-password';
+
     setIsLoading(true);
     try {
-      const response = await axios.get(url);
-      if (response.data.message === "Redirect") {
-        setData(response.data.bin);
-        setIsLoading(false);
-        return;
+      const response =  await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
+
+      if (!response.ok) {
+        throw response;
       }
 
-      setData(response.data);
+      const data = await response.json();
+      setData(data);
       setIsLoading(false);
     } catch (err) {
-      if (err.response) {
-        if (err.response.status === 401) {
-          document.getElementById("locked-bin").style.display = 'block';
-        } else if (err.response.status === 404) {
-          addToast("error", "Bin not found");
-          redirect("/");
-        }
+      addToast("error", "Failed to fetch bin data" + err.message);
+      setIsLoading(false);
+      return err;
+    }
+  }
+
+  const fetchWithPassword = async (password) => {
+    const url = import.meta.env.VITE_SERVER + '/' + id + '/lock';
+    setIsLoading(true);
+    try {
+      const response =  await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ password: password })
+      });
+
+      if (!response.ok) {
+        throw response;
       }
+
+      const data = await response.json();
+      setData(data);
+      setIsLoading(false);
+      setShowLockedForm(false);
+    } catch (err) {
+      if (err.status === 401) {
+        addToast("error", "Incorrect password");
+      }
+      addToast("error", "Failed to fetch bin data" + err.message);
+      setIsLoading(false);
+      return err;
     }
   }
 
   useEffect(() => {
-    const url = import.meta.env.VITE_SERVER + "/" + id; 
-    fetchData(url);
-  }, []);
+    const loadBin = async () => {
+      const status = await checkPassword();
 
-  // Handle create new bin
-  const handleCreateAnother = () => {
-    redirect("/");
-  }
+      if (status === "no-password") {
+        await fetchWithoutPassword();
+      } else {
+        setShowLockedForm(true);
+      }
+    }
+
+    loadBin();
+  }, []);
 
   // Handle locked password changed
   const handlePasswordChanged = (e) => {
     setPassword(e.target.value);
   }
-  // Handle submit
-  const handleSubmit = (e) => {
-    const url = import.meta.env.VITE_SERVER + '/get/' + id;
 
-    setIsLoading(true);
-    axios.get(url, {params: {password}})
-    .then((response) => {
-      const data = response.data;
-      setData(data);
-      setIsLoading(false);
-      document.getElementById("locked-bin").style.display = 'none';
-    })
-    .catch((err) => {
-      if (err.response.status === 401) {
-        addToast("error", "Wrong password");
-        setIsLoading(false);
-      }
-    })
-
+  // Handle submit for fetching with password
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    await fetchWithPassword(password);
   }
 
   // Copies
@@ -98,7 +138,8 @@ function Show() {
   const handleOpenLinkClicked = () => {
     window.open(data.text, '_blank');
   }
-
+ 
+  // Utils
   const convertUTCToLocal = (utcString) => {
     const utcDate = new Date(utcString);
     return utcDate.toLocaleString();
@@ -119,25 +160,27 @@ function Show() {
 
   return (
     <>
-        <TopHeader />
-
-        {/* <div class="show-header" style={{marginBottom: "0px", textAlign: "left"}}>
-            <div class="show-header-icon">
-              <button style={{}} onClick={handleCreateAnother}>Create another</button>
-            </div>
-        </div> */}
-
+      <div className="show-wrapper">
         <div class="container">
           <div class="container-form">
+            {showLockedForm &&
             <form class="show-form" onSubmit={handleSubmit}>
-              <div id="locked-bin" style={{display: "none"}}>
+              <div id="locked-bin">
                 <div style={{display: "flex", flexDirection: "column"}}>
-                  <h5 style={{width: "300px", margin: "1em", color: "red", marginBottom: "0.5em", textAlign: "left"}}>Type password to unlock this bin</h5>
-                  <input style={{width: "300px", boxSizing: "border-box", marginBottom: 0}} onChange={handlePasswordChanged} placeholder="Type password"></input>
-                  <button style={{width: "300px"}}>Unlock</button>
+                  <h5 style={{width: "300px", margin: "1em", color: "red", marginBottom: "0.5em", textAlign: "left"}}>This bin has been locked</h5>
+                  <input style={{width: "300px", boxSizing: "border-box", marginBottom: 0}} onChange={handlePasswordChanged} placeholder="Type password here to unlock..."></input>
+                  <Button width="300px"
+                          height="50px"
+                          margin="0.5em"
+                          title="Unlock"
+                          color="white"
+                          backgroundColor="var(--main-color)"
+                          type="submit"
+                          >
+                  </Button>
                 </div>
               </div>
-            </form>
+            </form>}
 
             <div style={{textAlign: "left", width: "100%", margin: "0 auto"}}>
                 <div style={{margin: "0.5em 0 0 0"}}>
@@ -154,6 +197,7 @@ function Show() {
                           color="white"
                           backgroundColor="var(--main-color)"
                           onClick={handleCopyLink}
+                          type="button"
                           >
                   </Button>
                   <Button width="100%"
@@ -163,6 +207,7 @@ function Show() {
                           color="white"
                           backgroundColor="var(--main-color)"
                           onClick={handleCopyText}
+                          type="button"
                           >
                   </Button>
                 </div>
@@ -184,14 +229,14 @@ function Show() {
                           color="white"
                           backgroundColor="var(--main-color)"
                           onClick={handleOpenLinkClicked}
+                          type="button"
                           >
                   </Button>
                 </div>
             </div>
           </div>
         </div>
-
-        <Footer />
+      </div>
     </>
   );
 }
