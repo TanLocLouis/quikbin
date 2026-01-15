@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient  } = require('mongodb');
+const bcrypt = require('bcrypt');
 
 const app = express();
 app.use(cors());
@@ -8,21 +8,16 @@ app.use(express.json());
 
 require('dotenv').config();
 const { validateBin } = require('./middleware/validate');
-const { hashPassword } = require('./middleware/password');
+const { hashPassword } = require('./utils/password');
 
+const { MongoClient  } = require('mongodb');
 // Connect to MongoDB
-// const uri = 'mongodb://' + 
-// process.env.MONGO_DB_USERNAME + ':' + 
-// process.env.MONGO_DB_PASSWORD +'@' + 
-// process.env.MONGO_DB_HOST + ':27017/';
 const uri = process.env.MONGO_DB_URL;
-
 const client = new MongoClient(uri);
 client.connect()
     .then(() => console.log('[STATUS] Connected to MongoDB'))
     .catch(err => console.error('[ERROR] Failed to connect to MongoDB', err));
 
-const bcrypt = require('bcrypt');
 
 // Create a new bin
 app.post('/create', validateBin, async (req, res) => {
@@ -92,13 +87,36 @@ app.post('/create', validateBin, async (req, res) => {
     }
 });
 
-
-// Get a bin by ID
-app.get('/get/:id', (req, res) => {
+// Check bins password without retrieving the bin
+app.get('/is-locked/:id', (req, res) => {
     const db = client.db('quikbin');
     const collection = db.collection('bins');
+
     const id = req.params.id;
-    
+
+    collection.findOne({'id': id})
+        .then(bin => {
+            if (!bin) {
+                console.log('[STATUS] Bin not found', id);
+                return res.status(404).json({ message: 'Bin not found' });
+            }
+
+            if (bin['password'] !== '') {
+                return res.status(200).json({ message: "locked" });
+            } else {
+                return res.status(200).json({ message: "no-password" });
+            }
+        });
+});
+
+// Get bins without password authentication
+app.post('/:id/no-password', (req, res) => {
+    const db = client.db('quikbin');
+    const collection = db.collection('bins');
+
+    const id = req.params.id;
+    console.log("[DEBUG] fetching bin without password:", id);
+
     collection.findOne({'id': id})
         .then(bin => {
             if (!bin) {
@@ -110,44 +128,56 @@ app.get('/get/:id', (req, res) => {
             // just return data
             if (bin['password'] === '') {
                 console.log('[STATUS] Bin retrieved', bin);
-                if (bin.isShorternURL) {
-                    return res.status(200).json(
-                        { 
-                            message: 'Redirect',
-                            redirect: bin.text,
-                            bin: bin
-                        }
-                    )
-                }
-
                 return res.status(200).json(bin);
             }
-            // if bin used,
-            // require to auth password
             else {
-                // Bin requires password authentication
-                const { comparePassword } = require('./middleware/password');
-                
-                if (!req.query || !req.query.password) {
-                    console.log('[STATUS] Bin retrieved, password required');
-                    return res.status(401).json({ message: 'Password required' });
-                }
-
-                comparePassword(req.query.password, bin['password'])
-                    .then(isMatch => {
-                        if (isMatch) {
-                            console.log('[STATUS] Bin retrieved, password authenticated');
-                            return res.status(200).json(bin);
-                        } else {
-                            console.log('[STATUS] Bin retrieved, invalid password');
-                            return res.status(401).json({ message: 'Invalid password' });
-                        }
-                    })
-                    .catch(err => {
-                        console.error('[ERROR] Password comparison error', err);
-                        return res.status(401).json({ message: 'Authentication failed' });
-                    })
+                console.log('[STATUS] Bin retrieved, password required');
+                return res.status(401).json({ message: 'Password required' });
             }
+        })
+        .catch(err => {
+            console.error('[ERROR] Failed to retrieve bin', err);
+            res.status(500).json({ message: 'Failed to retrieve bin' });
+        });
+});
+
+// Get bins with password authentication
+app.post('/:id/lock', (req, res) => {
+    console.log("[DEBUG] password authentication", req.body);
+    const db = client.db('quikbin');
+    const collection = db.collection('bins');
+    const password = req.body.password;
+    console.log("[DEBUG] Password received:", password);
+
+    const id = req.params.id;
+
+    collection.findOne({'id': id})
+        .then(bin => {
+            if (!bin) {
+                console.log('[STATUS] Bin not found', id);
+                return res.status(404).json({ message: 'Bin not found' });
+            }
+
+            // Bin requires password authentication
+            const { comparePassword } = require('./utils/password');
+            if (!req.body || !password) {
+                console.log('[STATUS] Bin retrieved, password required');
+                return res.status(401).json({ message: 'Password required' });
+            }
+            comparePassword(password, bin['password'])
+                .then(isMatch => {
+                    if (isMatch) {
+                        console.log('[STATUS] Bin retrieved, password authenticated');
+                        return res.status(200).json(bin);
+                    } else {
+                        console.log('[STATUS] Bin retrieved, invalid password');
+                        return res.status(401).json({ message: 'Invalid password' });
+                    }
+                })
+                .catch(err => {
+                    console.error('[ERROR] Password comparison error', err);
+                    return res.status(401).json({ message: 'Authentication failed' });
+                })
         })
         .catch(err => {
             console.error('[ERROR] Failed to retrieve bin', err);

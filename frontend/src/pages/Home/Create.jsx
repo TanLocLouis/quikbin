@@ -69,12 +69,13 @@ function Create() {
 
   const handleIDChanged = (e) => {
     const id = e.target.value;
-    if (!validateId(id)) return;
 
     setData({
       ...data,
       id: id,
     })
+
+    if (!validateId(id)) return;
   }
 
   // Text area state
@@ -137,12 +138,12 @@ function Create() {
 
   const handlePasswordChanged = (e) => {
     const password = e.target.value;
-    if (!validatePassword(password)) return;
-
     setData({
       ...data,
       password: e.target.value,
     })
+
+    if (!validatePassword(password)) return;
   }
 
   // Shortern URL state
@@ -160,7 +161,7 @@ function Create() {
     
     const isValidInput = validateId(data.id)
     && validateText(data.text)
-    && (data.password ? validatePassword(data.password) : true);
+    && validatePassword(data.password);
 
     if (!isValidInput) {
       addToast("error", "Please fix the errors before creating the bin");
