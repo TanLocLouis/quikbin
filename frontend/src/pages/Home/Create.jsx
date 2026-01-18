@@ -113,12 +113,7 @@ function Create() {
 
   // Password state
   const validatePassword = (password) => {
-    if (!password) {
-      addToast("warning", "Password cannot be empty");
-      return false;
-    }
-
-    if (password.length < 8) {
+    if (password.length > 0 && password.length < 8) {
       addToast("warning", "Password must be at least 8 characters");
       return false;
     }
@@ -188,19 +183,27 @@ function Create() {
 
   return (
     <>
+      <div style={{height: "50px"}}></div>
       <div className="create-wrapper">
         <div className="header">
           <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
-            <label style={{"margin": "0.5em", "marginBottom": "0em"}}>ID: </label>
+            <label style={{"margin": "0.5em", "marginBottom": "0em"}}>ID </label>
             <input  id="header-id" 
                     type="text" 
                     onChange={handleIDChanged}
                     placeholder='ID'
                     required></input>
           </div>
-          
+
           <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
-            <label style={{"margin": "0.5em", "marginBottom": "0em"}}>Expire after: </label>
+            <label style={{"margin": "0.5em", "marginBottom": "0em"}}> Password </label>
+            <input type="password" 
+                    onChange={handlePasswordChanged}
+                    placeholder='Optional'></input>
+          </div>
+
+          <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
+            <label style={{"margin": "0.5em", "marginBottom": "0em"}}>Expire after </label>
             <select id="header-expire" onChange={handleExpireChanged}>
               <option value={expireList['1 minute']}>1 minutes</option>
               <option value={expireList['15 minutes']} selected>15 minutes</option>
@@ -212,41 +215,24 @@ function Create() {
               <option value="Never">Never</option>
             </select>
           </div>
-
-          <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
-            <label style={{"margin": "0.5em", "marginBottom": "0em"}}> Password: </label>
-            <input type="password" 
-                    onChange={handlePasswordChanged}
-                    placeholder='Optional'></input>
-          </div>
         </div>
 
         <div className="container">
           <div className="container-form">
             <div>
-              {/* <div style={{"display": "flex", "justifyContent": "flex-start"}}>
-                <button onClick={handleNew}>New</button>
-                <button style={{"display": "none"}}>Copy Link</button>
-                <button
-                  style={{"marginLeft": "0"}} 
-                  onClick={handleClear}>Clear</button>
-              </div> */}
-            </div>
-
-            {/* <hr></hr> */}
-
-            <div style={{"height": "100%"}}>
               <div style={{"display": "flex", "justifyContent": "flex-start", "alignItems": "center"}} >
                 <Switch checked={checkShorternURL} onChange={handleShorternURLChanged}/>
-                <label>Make this as ShortenURL</label>
+                <label style={{"color": "var(--color-text-secondary)"}}>Make this as ShortenURL</label>
               </div>
-
-              <AutoResizeTextarea 
-                minHeight={200}
-                value={data.text}
-                onChange={handleTextChanged}
-                placeholder="Your text here..."
-              />
+              
+              <div style={{"margin": "0.5em 0 0.5em 0"}}>
+                <AutoResizeTextarea
+                  minHeight="calc(100vh - 600px)" 
+                  value={data.text}
+                  onChange={handleTextChanged}
+                  placeholder="Your text here..."
+                />
+              </div>
             </div>
 
             {/* <div style={{"width": "100%", "marginTop": "0.5em"}}>
@@ -256,10 +242,8 @@ function Create() {
 
             <Button width="100%"
                     height="50px"
-                    margin="0.5em 0 0 0"
+                    margin="0"
                     title="Create"
-                    color="white"
-                    backgroundColor="var(--main-color)"
                     onClick={handleCreate}
                     >
             </Button>

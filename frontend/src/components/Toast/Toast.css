@@ -12,8 +12,7 @@
 }
 
 .toast {
-    background-color: rgb(85 93 198);
-    color: #fff;
+    color: var(--color-text-primary);
 
     padding: 1em 1.5em;
     border-radius: 5px;
@@ -25,15 +24,15 @@
 }
 
 .toast-info {
-    background-color: rgb(85 93 198);
+    background-color: var(--color-info);
 }
 
 .toast-warning {
-    background-color: rgb(255 165 0);
+    background-color: var(--color-warning);
 }
 
 .toast-error {
-    background-color: rgb(220 20 60);
+    background-color: var(--color-error);
 }
 
 @keyframes slideDown {

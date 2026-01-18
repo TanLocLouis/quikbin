@@ -63,7 +63,7 @@ const Switch = ({
 		position: 'relative',
 		transition: 'background 120ms ease',
 		outline: 'none',
-		border: 'none',
+		border: '1px solid var(--color-primary)',
 		cursor: disabled ? 'not-allowed' : 'pointer',
 		opacity: disabled ? 0.6 : 1,
 		padding: s.pad,

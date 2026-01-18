@@ -36,9 +36,10 @@ const AutoResizeTextarea = ({
         minHeight,
         maxHeight,
         borderRadius: "8px",
-        padding: "0.5em",
+        padding: "1em",
         resize: "none",
         width: "100%",
+        borderColor: "var(--color-primary)",
       }}
       {...props}
     />

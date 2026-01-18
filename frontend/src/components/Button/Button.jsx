@@ -4,8 +4,8 @@ const Button = ({width = "100%",
                 height = "50px",
                 margin = "0",
                 title = "Button",
-                color = "black",
-                backgroundColor="white",
+                color = "var(--color-text-primary)",
+                backgroundColor = "var(--color-primary)",
                 ...props}) => {
     return (
         <button style={{width,

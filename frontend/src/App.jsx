@@ -9,21 +9,22 @@ import Footer from '@/components/Footer/Footer'
 
 function App() {
   return (
+    <div className="app">
+      <BrowserRouter>
+        <ToastProvider>
+          <ToastList />
 
-    <BrowserRouter>
-      <ToastProvider>
-        <ToastList />
+          <TopHeader />
 
-        <TopHeader />
+          <Routes>
+            <Route path="/" element={<Create />}/>
+            <Route path="/:id" element={<Show />}/>
+          </Routes>
 
-        <Routes>
-          <Route path="/" element={<Create />}/>
-          <Route path="/:id" element={<Show />}/>
-        </Routes>
-
-        <Footer />
-      </ToastProvider>
-    </BrowserRouter>
+          <Footer />
+        </ToastProvider>
+      </BrowserRouter>
+    </div>
 
   )
 }

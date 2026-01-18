@@ -10,7 +10,7 @@
     z-index: 1;
 
     height: 50px;
-    background-color: var(--container-color);
+    background-color: var(--color-primary);
 }
 
 .top-header:hover {
