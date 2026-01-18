@@ -32,6 +32,7 @@ function Create() {
     isShorternURL: false,
   });
   const [checkShorternURL, setCheckShorternURL] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const textAreaRef = useRef(null);
   const handleClear = () => {
@@ -153,7 +154,6 @@ function Create() {
   // Handle create data
   const navigate = useNavigate();
   const handleCreate = () => {
-    
     const isValidInput = validateId(data.id)
     && validateText(data.text)
     && validatePassword(data.password);
@@ -163,12 +163,15 @@ function Create() {
       return;
     }
 
-    const url = import.meta.env.VITE_SERVER + '/create';
+    setIsSubmitting(true);
+    const url = import.meta.env.VITE_SERVER + '/api/bin/create';
     axios.post(url, {data})
     .then((response) => {
       navigate('/' + data.id.slice(0, 8));
+      setIsSubmitting(false);
     })
     .catch((error) => {
+      setIsSubmitting(false);
       if (error.status == 400) {
         addToast("warning", error.response.data.message);
         return;
@@ -183,7 +186,7 @@ function Create() {
 
   return (
     <>
-      <div style={{height: "50px"}}></div>
+      <div style={{height: "60px"}}></div>
       <div className="create-wrapper">
         <div className="header">
           <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
@@ -239,11 +242,11 @@ function Create() {
                 <button style={{"width": "100%", "margin": "0", "backgroundColor": "var(--main-color)", "color": "white"}}
                         onClick={handleCreate}>Create</button>
             </div> */}
-
             <Button width="100%"
                     height="50px"
                     margin="0"
-                    title="Create"
+                    title={isSubmitting ? "Creating..." : "Create"}
+                    disabled={isSubmitting}
                     onClick={handleCreate}
                     >
             </Button>

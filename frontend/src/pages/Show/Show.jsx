@@ -18,7 +18,7 @@ function Show() {
 
   // Check if bin is locked 
   const checkPassword = async () => {
-    const url = import.meta.env.VITE_SERVER + '/is-locked/' + id;
+    const url = import.meta.env.VITE_SERVER + '/api/bin/is-locked/' + id;
     try {
       const response  = await fetch(url, {
         method: 'GET',
@@ -40,12 +40,12 @@ function Show() {
 
   // Fetching data
   const fetchWithoutPassword = async () => {
-    const url = import.meta.env.VITE_SERVER + '/' + id + '/no-password';
+    const url = import.meta.env.VITE_SERVER + '/api/bin/no-password/' + id;
 
     setIsLoading(true);
     try {
       const response =  await fetch(url, {
-        method: 'POST',
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -67,7 +67,7 @@ function Show() {
   }
 
   const fetchWithPassword = async (password) => {
-    const url = import.meta.env.VITE_SERVER + '/' + id + '/lock';
+    const url = import.meta.env.VITE_SERVER + '/api/bin/with-password/' + id;
     setIsLoading(true);
     try {
       const response =  await fetch(url, {
@@ -165,7 +165,7 @@ function Show() {
 
   return (
     <>
-      <div style={{height: "50px"}}></div>
+      <div style={{height: "60px"}}></div>
       <div className="show-wrapper">
         <div class="container">
           <div class="container-form">
@@ -174,7 +174,7 @@ function Show() {
               <div id="locked-bin">
                 <div style={{display: "flex", flexDirection: "column"}}>
                   <h5 style={{width: "300px", margin: "1em", color: "var(--color-text-secondary)", marginBottom: "0.5em", textAlign: "left"}}>This bin has been locked</h5>
-                  <input style={{width: "300px", boxSizing: "border-box", marginBottom: 0}} onChange={handlePasswordChanged} placeholder="Type password here to unlock..."></input>
+                  <input style={{width: "300px", boxSizing: "border-box", marginBottom: 0}} onChange={handlePasswordChanged} placeholder="Type password here to unlock..." type="password"></input>
                   <Button width="300px"
                           height="50px"
                           margin="0.5em"
