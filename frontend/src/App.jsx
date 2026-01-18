@@ -6,6 +6,7 @@ import { ToastProvider } from './contexts/ToastContext'
 import ToastList from '@/components/Toast/ToastList'
 import TopHeader from '@/components/TopHeader/TopHeader'
 import Footer from '@/components/Footer/Footer'
+import { useEffect } from 'react'
 
 function App() {
   return (
