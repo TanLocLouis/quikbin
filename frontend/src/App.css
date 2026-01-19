@@ -8,5 +8,5 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--color-primary-soft);
+  background-color: var(--color-primary);
 }
