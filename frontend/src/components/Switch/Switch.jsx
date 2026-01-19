@@ -74,7 +74,7 @@ const Switch = ({
 
 	const knobStyle = {
 		position: 'absolute',
-		top: s.pad,
+		top: s.pad - 1, // -1 to account for border
 		left: s.pad,
 		width: s.knob,
 		height: s.knob,

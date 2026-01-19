@@ -167,6 +167,7 @@ function Show() {
     <>
       <div style={{height: "60px"}}></div>
       <div className="show-wrapper">
+        <div className="show-wrapper-animate"></div>
         <div class="container">
           <div class="container-form">
             {showLockedForm &&

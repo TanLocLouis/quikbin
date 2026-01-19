@@ -188,6 +188,7 @@ function Create() {
     <>
       <div style={{height: "60px"}}></div>
       <div className="create-wrapper">
+        {/* <div className="create-wrapper-animate"></div> */}
         <div className="header">
           <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
             <label style={{"margin": "0.5em", "marginBottom": "0em"}}>ID </label>

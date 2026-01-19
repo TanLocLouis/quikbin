@@ -12,5 +12,7 @@ button {
 }
 button:hover {
   border-color: #646cff;
-  scale: 1.02;
+  /* scale: 1.02; */
+
+  box-shadow: 0 2px 10px var(--color-primary);
 }
