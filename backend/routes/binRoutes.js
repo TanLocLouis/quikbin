@@ -10,7 +10,7 @@ router.post('/create',
 
 // GET /api/bin/is-locked/:id
 router.get('/is-locked/:id',
-    binController.isLock
+    binController.isLocked
 );
 
 // GET /api/bin/no-password/:id
