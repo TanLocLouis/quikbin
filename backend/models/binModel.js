@@ -1,6 +1,5 @@
 import client from '../db/db.js';
 
-
 const db = client.db('quikbin');
 const binsCollection = db.collection('bins');
 

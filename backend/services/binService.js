@@ -1,5 +1,5 @@
 import binModel from '../models/binModel.js';
-import { hashPassword, comparePassword } from '../utils/password.js';
+import passwordUtil from '../utils/password.js';
 
 async function createBin(binData) {
     const bin = {
@@ -23,7 +23,7 @@ async function createBin(binData) {
     // Check if user has set password
     // If yes, hash it
     if (bin['password'] !== '') {
-        bin['password'] = await hashPassword(bin['password']);
+        bin['password'] = await passwordUtil.hashPassword(bin['password']);
     // Or they not use password, just insert to bins
     }
 
@@ -50,7 +50,7 @@ async function getBinWithPassword(binId, password) {
     }
 
     // Compare password
-    const isMatch = await comparePassword(password, bin['password']);
+    const isMatch = await passwordUtil.comparePassword(password, bin['password']);
     if (!isMatch) {
         return null;
     }

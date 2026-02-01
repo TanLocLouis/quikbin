@@ -1,4 +1,5 @@
-const bcrypt = require('bcrypt');
+import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 
 /**
  * Hash a plain password
@@ -9,6 +10,10 @@ async function hashPassword(plainPassword) {
   const saltRounds = 10;
   const hashed = await bcrypt.hash(plainPassword, saltRounds);
   return hashed;
+}
+
+async function genToken() {
+  return crypto.randomBytes(32).toString('hex');
 }
 
 /**
@@ -63,8 +68,9 @@ function authenticatePassword(req, res, next) {
   });
 }
 
-module.exports = {
+export default {
   hashPassword,
   comparePassword,
   authenticatePassword,
-};
+  genToken
+}

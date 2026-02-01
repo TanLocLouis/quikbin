@@ -1,0 +1,91 @@
+import authModel from '../models/authModel.js';
+import passwordUtil from '../utils/password.js';
+import { sendMail } from '../utils/emailSender.js';
+
+const tokenMemory = new Map();
+
+async function signUp(userData) {
+    const user = {
+        username: userData.username,
+        email: userData.email,
+        passwordHash: userData.passwordHash,
+        isActive: false
+    };
+
+    // Hash password
+    user.passwordHash = await passwordUtil.hashPassword(userData.password);
+
+    // Check if username exists
+    const exists = await authModel.isUserExisted(user.username);
+    if (exists) {
+        const err = new Error('User already exists');
+        err.code = 'USER_EXISTS';
+        throw err;
+    }
+
+    // Create user
+    const result = await authModel.createUser(user);
+
+    // Send verification email
+    const token = await passwordUtil.genToken();
+    tokenMemory.set(token, {
+        username: user.username,
+        expiresAt: Date.now() + 5 * 60 * 1000 // 5 minutes expiry
+    });
+    sendMail(user.email, token);
+
+    return result;
+}
+
+async function verifyAccount(token) {
+    const tokenData = tokenMemory.get(token);
+    if (!tokenData) {
+        const err = new Error('Invalid or expired token');
+        err.code = 'INVALID_TOKEN';
+        throw err;
+    }
+
+    if (Date.now() > tokenData.expiresAt) {
+        tokenMemory.delete(token);
+        const err = new Error('Token has expired');
+        err.code = 'TOKEN_EXPIRED';
+        throw err;
+    }
+
+    const result = await authModel.setActive(tokenData.username);
+    tokenMemory.delete(token);
+
+    return result;
+}
+
+async function login(username, password) {
+    const user = await authModel.getUserByUsername(username);
+    if (!user) {
+        const err = new Error('User not found');
+        err.code = 'USER_NOT_FOUND';
+        throw err;
+    }
+
+    // Check if user is active
+    if (!user.isActive) {
+        const err = new Error('Account is not verified');
+        err.code = 'ACCOUNT_INACTIVE';
+        throw err;
+    }
+
+    // Check password
+    const passwordMatch = await passwordUtil.comparePassword(password, user.passwordHash);
+    if (!passwordMatch) {
+        const err = new Error('Invalid password');
+        err.code = 'INVALID_PASSWORD';
+        throw err;
+    }
+
+    return { username: user.username, email: user.email, isActive: user.isActive };
+}
+
+export default {
+    signUp,
+    verifyAccount,
+    login
+}
