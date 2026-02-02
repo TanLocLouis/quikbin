@@ -173,6 +173,7 @@ function Show() {
       <div className="show-wrapper">
         <div className="show-wrapper-animate"></div>
         <div class="container">
+
           <div class="container-form">
             {showLockedForm &&
             <form class="show-form" onSubmit={handleSubmit}>
@@ -255,6 +256,7 @@ function Show() {
 
             </div>
           </div>
+          
         </div>
       </div>
     </>

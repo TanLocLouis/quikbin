@@ -286,3 +286,8 @@ textarea {
   cursor: pointer;
 }
 
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+

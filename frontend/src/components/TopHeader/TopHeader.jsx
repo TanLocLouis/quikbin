@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router";
-import { useState, useEffect, use } from "react";
+import { useState } from "react";
 import "./TopHeader.css";
+import { useLayoutEffect } from "react";
 
 const TopHeader = () => {
     const redirect = useNavigate();
@@ -9,7 +10,7 @@ const TopHeader = () => {
     }
 
     const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
-    useEffect(() => {
+    useLayoutEffect(() => {
         document.documentElement.dataset.theme = theme;
         localStorage.setItem("theme", theme);
     }, [theme]);
@@ -29,16 +30,28 @@ const TopHeader = () => {
         <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" fill="black" viewBox="0 0 576 512"><path d="M200.6-7.9c-6.7-4.4-15.1-5.2-22.5-2.2S165.4-.5 163.9 7.3L143 110.6 39.7 131.4c-7.8 1.6-14.4 7-17.4 14.3s-2.2 15.8 2.2 22.5L82.7 256 24.5 343.8c-4.4 6.7-5.2 15.1-2.2 22.5s9.6 12.8 17.4 14.3L143 401.4 163.9 504.7c1.6 7.8 7 14.4 14.3 17.4s15.8 2.2 22.5-2.2l87.8-58.2 87.8 58.2c6.7 4.4 15.1 5.2 22.5 2.2s12.8-9.6 14.3-17.4l20.9-103.2 103.2-20.9c7.8-1.6 14.4-7 17.4-14.3s2.2-15.8-2.2-22.5l-58.2-87.8 58.2-87.8c4.4-6.7 5.2-15.1 2.2-22.5s-9.6-12.8-17.4-14.3L433.8 110.6 413 7.3C411.4-.5 406-7 398.6-10.1s-15.8-2.2-22.5 2.2L288.4 50.3 200.6-7.9zM186.9 135.7l17-83.9 71.3 47.3c8 5.3 18.5 5.3 26.5 0l71.3-47.3 17 83.9c1.9 9.5 9.3 16.8 18.8 18.8l83.9 17-47.3 71.3c-5.3 8-5.3 18.5 0 26.5l47.3 71.3-83.9 17c-9.5 1.9-16.9 9.3-18.8 18.8l-17 83.9-71.3-47.3c-8-5.3-18.5-5.3-26.5 0l-71.3 47.3-17-83.9c-1.9-9.5-9.3-16.9-18.8-18.8l-83.9-17 47.3-71.3c5.3-8 5.3-18.5 0-26.5l-47.3-71.3 83.9-17c9.5-1.9 16.8-9.3 18.8-18.8zM239.6 256a48.4 48.4 0 1 1 96.8 0 48.4 48.4 0 1 1 -96.8 0zm144.8 0a96.4 96.4 0 1 0 -192.8 0 96.4 96.4 0 1 0 192.8 0z"/></svg>
     );
 
+    const handleSignUpClicked = () => {
+        redirect("/sign-up");
+    }
+
     return (
         <div className="top-header">
             <h2 style={{marginLeft: "0.5em"}}
                 onClick={handleLogoClicked}
               >QuikBin</h2>
-            <div className="top-header-right"
-                 onClick={handleToggleDarkmode}>
-                <Link className="link">
-                    {theme === "dark" ? <MoonIcon /> : <SunIcon />}
-                </Link>
+
+            <div className="top-header-right">
+                <div onClick={handleSignUpClicked}>
+                    <Link className="link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" fill="var(--color-text-primary)" viewBox="0 0 512 512"><path d="M352 96l64 0c17.7 0 32 14.3 32 32l0 256c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0c53 0 96-43 96-96l0-256c0-53-43-96-96-96l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32zm-9.4 182.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L242.7 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128z"/></svg>
+                    </Link>
+                </div>
+
+                <div onClick={handleToggleDarkmode}>
+                    <Link className="link">
+                        {theme === "dark" ? <MoonIcon /> : <SunIcon />}
+                    </Link>
+                </div>
             </div>
         </div>
     );
