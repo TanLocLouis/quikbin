@@ -1,4 +1,6 @@
+import { error } from 'node:console';
 import authService from '../services/authService.js';
+import { ref } from 'node:process';
 
 async function signUp(req, res) {
     const { username, email, password } = req.body;
@@ -7,12 +9,18 @@ async function signUp(req, res) {
         res.status(201).json(newUser);
     } catch (err) {
         if (err.code === 'USER_EXISTS') {
-            res.status(400).json({ message: 'User already exists' });
+            res.status(409).json({ 
+                error: 'USER_EXISTS',
+                message: 'User already exists'
+            });
             return;
         }
 
         console.error('[ERROR] Failed to sign up user', err);
-        res.status(500).json({ message: 'Failed to sign up user' });
+        res.status(500).json({ 
+            error: 'SIGNUP_FAILED',
+            message: 'Failed to sign up user'
+        });
     }
 }
 
@@ -20,14 +28,25 @@ async function verifyAccount(req, res) {
     const { token } = req.query;
     try {
         await authService.verifyAccount(token);
-        res.status(200).json({ message: 'Account verified successfully' });
+        // res.status(200).json({
+        //     status: 'SUCCESS', 
+        //     message: 'Account verified successfully' 
+        // });
+
+        res.redirect('http://localhost:5173/verify-sign-up');
     } catch (err) {
         if (err.code === 'INVALID_TOKEN' || err.code === 'TOKEN_EXPIRED') {
-            res.status(400).json({ message: err.message });
+            res.status(400).json({ 
+                error: err.code,
+                message: err.message 
+            });
             return;
         }
         console.error('[ERROR] Failed to verify account', err);
-        res.status(500).json({ message: 'Failed to verify account' });
+        res.status(500).json({ 
+            error: 'VERIFICATION_FAILED',
+            message: 'Failed to verify account' 
+        });
     }
 }
 
@@ -35,25 +54,59 @@ async function login(req, res) {
     const { username, password } = req.body;
     try {
         const user = await authService.login(username, password);
-        res.status(200).json(user);
+        res.status(200).json( user );
     } catch (err) {
         if (err.code === 'ACCOUNT_INACTIVE') {
-            res.status(400).json({ message: 'Account is not verified' });
+            res.status(400).json({ 
+                error: err.code,
+                message: 'Account is not verified' 
+            });
             return;
         }
 
         if (err.code === "INVALID_PASSWORD") {
-            res.status(400).json({ message: 'Invalid password' });
+            res.status(400).json({ 
+                error: err.code,
+                message: 'Invalid password' 
+            });
             return;
         }
         
         console.error('[ERROR] Failed to login user', err);
-        res.status(500).json({ message: 'Failed to login user' });
+        res.status(500).json({ 
+            error: 'LOGIN_FAILED',
+            message: 'Failed to login user' 
+        });
+    }
+}
+
+async function refreshToken(req, res) {
+    const { token } = req.body;
+
+    try {
+        const newAccessToken = await authService.refreshToken(token);
+        res.status(200).json(
+            { accessToken: newAccessToken }
+        );
+    } catch (err) {
+        if (err.code === 'INVALID_TOKEN' || err.code === 'TOKEN_EXPIRED') {
+            res.status(400).json({ 
+                error: err.code,
+                message: err.message 
+            });
+            return;
+        }
+        console.error('[ERROR] Failed to refresh token', err);
+        res.status(500).json({ 
+            error: 'REFRESH_TOKEN_FAILED',
+            message: 'Failed to refresh token' 
+        });
     }
 }
 
 export default {
     signUp,
     verifyAccount,
-    login
+    login,
+    refreshToken
 }

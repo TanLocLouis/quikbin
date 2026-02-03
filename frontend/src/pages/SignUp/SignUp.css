@@ -106,3 +106,9 @@
     font-size: 0.9em;
     color: var(--color-text-secondary);
 }
+
+.signup-note-success {
+    margin-top: 0.5em;
+    font-size: 0.9em;
+    color: var(--color-success);
+}

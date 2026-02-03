@@ -164,7 +164,7 @@ function Create() {
     }
 
     setIsSubmitting(true);
-    const url = import.meta.env.VITE_SERVER + '/api/bin/create';
+    const url = import.meta.env.VITE_API_URL + '/api/bin/create';
     axios.post(url, {data})
     .then((response) => {
       navigate('/' + data.id.slice(0, 8));

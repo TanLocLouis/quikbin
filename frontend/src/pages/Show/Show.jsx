@@ -18,7 +18,7 @@ function Show() {
 
   // Check if bin is locked 
   const checkPassword = async () => {
-    const url = import.meta.env.VITE_SERVER + '/api/bin/is-locked/' + id;
+    const url = import.meta.env.VITE_API_URL + '/api/bin/is-locked/' + id;
     try {
       const response  = await fetch(url, {
         method: 'GET',
@@ -44,7 +44,7 @@ function Show() {
 
   // Fetching data
   const fetchWithoutPassword = async () => {
-    const url = import.meta.env.VITE_SERVER + '/api/bin/no-password/' + id;
+    const url = import.meta.env.VITE_API_URL + '/api/bin/no-password/' + id;
 
     setIsLoading(true);
     try {
@@ -64,14 +64,14 @@ function Show() {
       setIsShortenedURL(data.isShorternURL);
       setIsLoading(false);
     } catch (err) {
-      addToast("error", "Failed to fetch bin data" + err.message);
+      addToast("error", "Failed to fetch bin data " + err.message);
       setIsLoading(false);
       return err;
     }
   }
 
   const fetchWithPassword = async (password) => {
-    const url = import.meta.env.VITE_SERVER + '/api/bin/with-password/' + id;
+    const url = import.meta.env.VITE_API_URL + '/api/bin/with-password/' + id;
     setIsLoading(true);
     try {
       const response =  await fetch(url, {
@@ -97,7 +97,7 @@ function Show() {
         setIsLoading(false);
         return err;
       }
-      addToast("error", "Failed to fetch bin data" + err.message);
+      addToast("error", "Failed to fetch bin data " + err.message);
       setIsLoading(false);
       return err;
     }

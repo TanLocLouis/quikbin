@@ -1,6 +1,8 @@
 import authModel from '../models/authModel.js';
 import passwordUtil from '../utils/password.js';
 import { sendMail } from '../utils/emailSender.js';
+import jwtUtils from '../utils/jwt.js';
+import jwt from '../utils/jwt.js';
 
 const tokenMemory = new Map();
 
@@ -81,11 +83,46 @@ async function login(username, password) {
         throw err;
     }
 
-    return { username: user.username, email: user.email, isActive: user.isActive };
+    // Generate tokens
+    const refreshToken = jwtUtils.generateRefreshToken({ username: user.username, email: user.email });
+    const accessToken = jwtUtils.generateAccessToken({ username: user.username });
+
+    const userData = {
+        username: user.username,
+        email: user.email,
+        isActive: user.isActive
+    }
+
+    return {
+        data: userData,
+        refreshToken,
+        accessToken
+    };
+}
+
+async function refreshToken(token) {
+    try {
+        const result = jwtUtils.verifyAccessToken(token);
+        if (!result) {
+            const err = new Error('Invalid token');
+            err.code = 'INVALID_TOKEN';
+            throw err;
+        }
+
+        const newAccessToken = jwt.generateAccessToken({ username: result.username });
+        return newAccessToken;
+    } catch (err) {
+        if (err.name === 'TokenExpiredError') {
+            const error = new Error('Token has expired');
+            error.code = 'TOKEN_EXPIRED';
+            throw error;
+        }
+    }
 }
 
 export default {
     signUp,
     verifyAccount,
-    login
+    login,
+    refreshToken
 }

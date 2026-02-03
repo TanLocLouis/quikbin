@@ -17,7 +17,7 @@ function generateVerificationEmail(token) {
       <div class="email-container">
         <div class="email-header">Verify Your Signup</div>
         <div class="email-body">
-          <p>Welcome! Please use the code below to verify your account</p>
+          <p>Welcome! Please use the code below to verify your Quikbin account.</p>
           <a class="email-link" href="${token}">
             Verify Account
           </a>

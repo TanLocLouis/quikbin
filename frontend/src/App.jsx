@@ -5,31 +5,37 @@ import Show from './pages/Show/Show'
 import SignUp from './pages/SignUp/SignUp'
 import Login from './pages/Login/Login'
 import { ToastProvider } from './contexts/ToastContext'
+import { AuthProvider } from './contexts/AuthContext'
 import ToastList from '@/components/Toast/ToastList'
 import TopHeader from '@/components/TopHeader/TopHeader'
 import Footer from '@/components/Footer/Footer'
+import VerifySignup from './pages/Verify/VerifySignUp'
 
 function App() {
   return (
     <div className="app">
       <BrowserRouter>
 
-        <ToastProvider>
-          <ToastList />
+          <ToastProvider>
+            <AuthProvider>
+              <ToastList />
 
-          <TopHeader />
+              <TopHeader />
 
-          <Routes>
-            <Route path="/sign-up" element={<SignUp />}/>
-            <Route path="/login" element={<Login />}/>
+              <Routes>
+                <Route path="/sign-up" element={<SignUp />}/>
+                <Route path="/login" element={<Login />}/>
+                <Route path="/verify-sign-up" element={<VerifySignup />}/>
+                <Route path="/profile" element={<Create />}/>
 
-            <Route path="/" element={<Create />}/>
-            <Route path="/:id" element={<Show />}/>
+                <Route path="/" element={<Create />}/>
+                <Route path="/:id" element={<Show />}/>
 
-          </Routes>
+              </Routes>
 
-          <Footer />
-        </ToastProvider>
+              <Footer />
+            </AuthProvider>
+          </ToastProvider>
 
       </BrowserRouter>
     </div>
