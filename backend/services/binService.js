@@ -8,6 +8,8 @@ async function createBin(binData) {
         password: binData.password || '',
         expireTime: binData.expireTime,
         isShorternURL: binData.isShorternURL,
+
+        userId: binData.userId || null,
     };
 
     // Check if bin ID exists

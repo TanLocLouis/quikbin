@@ -13,7 +13,9 @@ const binModel = {
                 expireTime: binData.expireTime,
                 isShorternURL: binData.isShorternURL,
                 createdAt: new Date(Date.now()),
-                closeBinAt: new Date(Date.now() + 1000 * binData.expireTime)
+                closeBinAt: new Date(Date.now() + 1000 * binData.expireTime),
+
+                userId: binData.userId || null,
             }
         );
         return result;

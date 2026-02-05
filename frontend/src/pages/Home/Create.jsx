@@ -9,6 +9,7 @@ import AutoResizeTextarea from '@/components/AutoResizeTextarea/AutoResizeTextar
 import Button from '../../components/Button/Button';
 
 import { useToast } from '../../contexts/ToastContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 function Create() {
   const expireList = {
@@ -23,7 +24,8 @@ function Create() {
   };
 
   const { addToast } = useToast();
-
+  const { userInfo, accessToken } = useAuth();
+  
   const [data, setData]= useState({
     id: uuidv4().slice(0, 8),
     text: "",
@@ -153,7 +155,7 @@ function Create() {
 
   // Handle create data
   const navigate = useNavigate();
-  const handleCreate = () => {
+  const handleCreate = async () => {
     const isValidInput = validateId(data.id)
     && validateText(data.text)
     && validatePassword(data.password);
@@ -164,19 +166,47 @@ function Create() {
     }
 
     setIsSubmitting(true);
-    const url = import.meta.env.VITE_API_URL + '/api/bin/create';
-    axios.post(url, {data})
-    .then((response) => {
-      navigate('/' + data.id.slice(0, 8));
-      setIsSubmitting(false);
-    })
-    .catch((error) => {
-      setIsSubmitting(false);
-      if (error.status == 400) {
-        addToast("warning", error.response.data.message);
+
+    if (accessToken) {
+      const url = import.meta.env.VITE_API_URL + '/api/bin/create/authenticated';
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({data}),
+        });
+
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const responseData = await res.json();
+        navigate('/' + data.id.slice(0, 8));
+        setIsSubmitting(false);
+      } catch (err) {
+        setIsSubmitting(false);
+        addToast("error", "An error occurred while creating the bin");
         return;
       }
-    });
+    } 
+    else {
+      const url = import.meta.env.VITE_API_URL + '/api/bin/create';
+      axios.post(url, {data})
+      .then((response) => {
+        navigate('/' + data.id.slice(0, 8));
+        setIsSubmitting(false);
+      })
+      .catch((error) => {
+        setIsSubmitting(false);
+        if (error.status == 400) {
+          addToast("warning", error.response.data.message);
+          return;
+        }
+      });
+    }
   }
 
   // Create new bin

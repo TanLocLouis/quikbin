@@ -3,6 +3,12 @@ import binService from '../services/binService.js';
 
 const createBin = async (req, res) => {
     try {
+        // If authenticated user, set userId
+        // If not, userId will be guest (null)
+        if (req.user) {
+            req.body.data.userId = req.user.username;
+        }
+
         const insertedBin = await binService.createBin(req.body.data);
         res.status(201).json({ message: 'Bin created', id: insertedBin.insertedId });
     } catch (err) {
