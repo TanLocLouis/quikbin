@@ -32,9 +32,9 @@ function generateVerificationEmail(token) {
 export async function sendMail(email, code) {
   console.log("Sending mail to: ", email);
 
-  if (!process.env.VITE_MAIL || !process.env.VITE_MAILTOKEN) {
+  if (!process.env.GMAIL_MAIL || !process.env.GMAIL_MAIL_TOKEN) {
     console.warn(
-      "[WARN] Mail credentials not set (VITE_MAIL / VITE_MAILTOKEN). Email sending will likely fail."
+      "[WARN] Mail credentials not set (GMAIL_MAIL / GMAIL_MAIL_TOKEN). Email sending will likely fail."
     );
   }
 

@@ -1,4 +1,3 @@
-import { get } from 'node:http';
 import client from '../db/db.js';
 
 const db = client.db('quikbin');

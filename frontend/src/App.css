@@ -1,5 +1,7 @@
 .app {
   height: 100vh;
+
+  background-color: var(--color-secondary-soft);
 }
 
 .header {

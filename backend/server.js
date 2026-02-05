@@ -7,10 +7,12 @@ app.use(express.json());
 
 import binRoutes from './routes/binRoutes.js';
 import authRoutes from './routes/authRoutes.js';
+import usersRoutes from './routes/usersRoutes.js';
 
 // Routes
 app.use('/api/bin', binRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/users', usersRoutes);
 
 // Backend Listen
 app.listen(3000, () => {

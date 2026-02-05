@@ -10,6 +10,7 @@ import ToastList from '@/components/Toast/ToastList'
 import TopHeader from '@/components/TopHeader/TopHeader'
 import Footer from '@/components/Footer/Footer'
 import VerifySignup from './pages/Verify/VerifySignUp'
+import Profile from './pages/Profile/profile'
 
 function App() {
   return (
@@ -26,7 +27,7 @@ function App() {
                 <Route path="/sign-up" element={<SignUp />}/>
                 <Route path="/login" element={<Login />}/>
                 <Route path="/verify-sign-up" element={<VerifySignup />}/>
-                <Route path="/profile" element={<Create />}/>
+                <Route path="/profile" element={<Profile />}/>
 
                 <Route path="/" element={<Create />}/>
                 <Route path="/:id" element={<Show />}/>

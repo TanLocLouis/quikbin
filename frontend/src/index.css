@@ -171,6 +171,7 @@
   --color-primary: var(--color-indigo-400);
   --color-primary-soft: var(--color-indigo-300);
   --color-secondary: var(--color-neutral-100);
+  --color-secondary-soft: var(--color-neutral-300);
 
   --color-text-primary: var(--color-gray-900);
   --color-text-secondary: var(--color-gray-900);
@@ -235,6 +236,13 @@ label {
   font-size: 1em;
   font-weight: 500;
 
+  color: var(--color-text-primary);
+}
+
+p {
+  font-size: 1em;
+  font-weight: 500;
+  
   color: var(--color-text-primary);
 }
 

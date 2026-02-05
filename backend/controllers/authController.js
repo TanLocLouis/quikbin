@@ -1,6 +1,4 @@
-import { error } from 'node:console';
 import authService from '../services/authService.js';
-import { ref } from 'node:process';
 
 async function signUp(req, res) {
     const { username, email, password } = req.body;
