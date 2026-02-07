@@ -24,6 +24,10 @@ const binModel = {
         const bin = await binsCollection.findOne({ bin_id: binId });
         return bin !== null;
     },
+    async getAllBinsByUserId(userId) {
+        const bins = await binsCollection.find({ userId: userId }).toArray();
+        return bins;
+    },
     async getBinById(binId) {
         const bin = await binsCollection.findOne({ bin_id: binId });
         return bin;

@@ -38,6 +38,11 @@ async function isLocked(binId) {
     return locked;
 }
 
+async function getAllBinsByUser(userId) {
+    const bins = await binModel.getAllBinsByUserId(userId);
+    return bins;
+}
+
 async function getBinWithoutPassword(binId) {
     const bin = await binModel.getBinById(binId);
     return bin;
@@ -63,6 +68,7 @@ async function getBinWithPassword(binId, password) {
 export default {
     createBin,
     isLocked,
+    getAllBinsByUser,
     getBinWithoutPassword,
     getBinWithPassword
 }

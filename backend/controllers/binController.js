@@ -23,6 +23,10 @@ const createBin = async (req, res) => {
 
 
 const isLocked = async (req, res) => {
+    if (!req.params.id) {
+        return res.status(400).json({ message: 'Bin ID is required' });
+    }
+
     const id = req.params.id;
 
     try {
@@ -34,7 +38,29 @@ const isLocked = async (req, res) => {
     }
 }
 
+const getAllBins = async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const userId = req.user.username;
+
+    try {
+        const bins = await binService.getAllBinsByUser(userId);
+        res.status(200).json( {
+            data: bins
+        });
+    } catch {
+        console.error('[ERROR] Failed to retrieve all bins for user', userId);
+        res.status(500).json({ message: 'Failed to retrieve bins' });
+    }
+}
+
 const getBinWithoutPassword = async (req, res) => {
+    if (!req.params.id) {
+        return res.status(400).json({ message: 'Bin ID is required' });
+    }
+
     const id = req.params.id;
     console.log("[DEBUG] fetching bin without password:", id);
 
@@ -59,6 +85,10 @@ const getBinWithoutPassword = async (req, res) => {
 }
 
 const getBinWithPassword = async (req, res) => {
+    if (!req.params.id) {
+        return res.status(400).json({ message: 'Bin ID is required' });
+    }
+
     const password = req.body.password;
     console.log("[DEBUG] Password received:", password);
 
@@ -81,6 +111,7 @@ const getBinWithPassword = async (req, res) => {
 export default {
     createBin,
     isLocked,
+    getAllBins,
     getBinWithoutPassword,
     getBinWithPassword
 };

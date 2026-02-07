@@ -15,6 +15,12 @@ router.post('/create/authenticated',
     binController.createBin
 );
 
+// GET /api/bin/all
+router.get('/all',
+    authenticate,
+    binController.getAllBins
+);
+
 // GET /api/bin/is-locked/:id
 router.get('/is-locked/:id',
     binController.isLocked
