@@ -2,12 +2,15 @@ import "./Profile.css";
 import { useEffect, useState } from "react";
 import { useToast } from "../../contexts/ToastContext";
 import { useAuth } from "../../contexts/AuthContext";
+import Card from "../../components/Card/Card";
 
 const Profile = () => {
     const { addToast } = useToast();
-    const { userInfo } = useAuth();
+    const { userInfo, accessToken } = useAuth();
 
     const [profileData, setProfileData] = useState({});
+    const [binsData, setBinsData] = useState([]);
+
     const fetchUserProfile = async () => {
         try {
             const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/profile/${userInfo.username}`, {
@@ -29,8 +32,31 @@ const Profile = () => {
         }
     }
 
+    const fetchBinsData = async () => {
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/bin/all`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${accessToken}`
+                },
+            })
+
+            if (!res.ok) {
+                throw new Error("Unable to fetch bin list");
+            }
+
+            const data = await res.json();
+            setBinsData(data.data);
+        } catch (err) {
+            console.error("Error fetching data", err);
+            addToast("error", "Failed to load bins data");
+        }
+    }
+
     useEffect(() => {
         fetchUserProfile();
+        fetchBinsData();
     }, []);
 
     const convertToDateString = (isoString) => {
@@ -61,6 +87,18 @@ const Profile = () => {
                             <p className="profile-isVerified">{profileData.isVerified ? "✅ Verified" : "❌ Not Verified"}</p>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <div className="profile-container">
+                <div className="profile-container-bins">
+                    {binsData.length > 0 ? (
+                        binsData.map((bin) => (
+                            <Card key={bin._id} bin={bin} />
+                        ))
+                    ) : (
+                        <p>No bins available.</p>
+                    )}
                 </div>
             </div>
         </div>

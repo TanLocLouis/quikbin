@@ -59,7 +59,6 @@ const AuthProvider = ( { children } ) => {
             }
 
             const data = await res.json();
-            console.log("Login successful:", data);
 
             setAccessToken(data.accessToken);
             setUserInfo(data.data);
