@@ -10,6 +10,7 @@ import Button from '../../components/Button/Button';
 
 import { useToast } from '../../contexts/ToastContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { fetchWithAuth } from '../../utils/fetchWithAuth';
 
 function Create() {
   const expireList = {
@@ -170,7 +171,7 @@ function Create() {
     if (accessToken) {
       const url = import.meta.env.VITE_API_URL + '/api/bin/create/authenticated';
       try {
-        const res = await fetch(url, {
+        const res = await fetchWithAuth(url, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

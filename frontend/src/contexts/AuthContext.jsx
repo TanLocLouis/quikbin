@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useToast } from "./ToastContext";
 
 
@@ -6,9 +6,13 @@ const AuthContext = createContext();
 
 const AuthProvider = ( { children } ) => {
     const [accessToken, setAccessToken] = useState(null);
-    const [userInfo, setUserInfo] = useState(null);
+    const [userInfo, setUserInfo] = useState(localStorage.getItem("userInfo") ? JSON.parse(localStorage.getItem("userInfo")) : null);
 
     const { addToast } = useToast();
+
+    useEffect(() => {
+        refreshToken();
+    }, []);
 
     const signup = async (SignUpForm) => {
         try {
@@ -62,7 +66,7 @@ const AuthProvider = ( { children } ) => {
 
             setAccessToken(data.accessToken);
             setUserInfo(data.data);
-            localStorage.setItem("accessToken", data.accessToken);
+            localStorage.setItem("refreshToken", data.refreshToken);
             localStorage.setItem("userInfo", JSON.stringify(data.data));
 
             return true;
@@ -80,16 +84,17 @@ const AuthProvider = ( { children } ) => {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ token: accessToken })
+                body: JSON.stringify({ refreshToken: localStorage.getItem("refreshToken") })
             });
 
             if (!res.ok) {
                 throw new Error("Failed to refresh token");
             }
 
+            addToast("info", "Session refreshed successfully.");
             const data = await res.json();
+            
             setAccessToken(data.accessToken);
-            localStorage.setItem("accessToken", data.accessToken);
 
             return true;
         } catch {
@@ -102,8 +107,10 @@ const AuthProvider = ( { children } ) => {
     const logout = () => {
         setAccessToken(null);
         setUserInfo(null);
-        localStorage.removeItem("accessToken");
+
+        localStorage.removeItem("refreshToken");
         localStorage.removeItem("userInfo");
+
         addToast("info", "Logged out successfully.");
     }
 

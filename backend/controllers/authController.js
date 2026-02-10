@@ -79,10 +79,10 @@ async function login(req, res) {
 }
 
 async function refreshToken(req, res) {
-    const { token } = req.body;
+    const { refreshToken } = req.body;
 
     try {
-        const newAccessToken = await authService.refreshToken(token);
+        const newAccessToken = await authService.refreshToken(refreshToken);
         res.status(200).json(
             { accessToken: newAccessToken }
         );

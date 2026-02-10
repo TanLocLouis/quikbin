@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useToast } from "../../contexts/ToastContext";
 import { useAuth } from "../../contexts/AuthContext";
 import Card from "../../components/Card/Card";
+import { fetchWithAuth } from "../../utils/fetchWithAuth";
 
 const Profile = () => {
     const { addToast } = useToast();
@@ -13,7 +14,7 @@ const Profile = () => {
 
     const fetchUserProfile = async () => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/profile/${userInfo.username}`, {
+            const res = await fetchWithAuth(`${import.meta.env.VITE_API_URL}/api/users/profile/${userInfo.username}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -34,7 +35,7 @@ const Profile = () => {
 
     const fetchBinsData = async () => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/bin/all`, {
+            const res = await fetchWithAuth(`${import.meta.env.VITE_API_URL}/api/bin/all`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
