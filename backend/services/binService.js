@@ -65,10 +65,16 @@ async function getBinWithPassword(binId, password) {
     return bin;
 }
 
+async function deleteBinWithId(binId) {
+    const result = await binModel.deleteBinById(binId);
+    return result;
+}
+
 export default {
     createBin,
     isLocked,
     getAllBinsByUser,
     getBinWithoutPassword,
-    getBinWithPassword
+    getBinWithPassword,
+    deleteBinWithId,
 }

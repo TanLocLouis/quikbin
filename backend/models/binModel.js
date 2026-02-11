@@ -40,6 +40,10 @@ const binModel = {
 
         return false;
     },
+    async deleteBinById(binId) {
+        const result = await binsCollection.deleteOne({ bin_id: binId });
+        return result;
+    }
 };
 
 export default binModel;

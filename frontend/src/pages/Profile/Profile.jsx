@@ -65,6 +65,26 @@ const Profile = () => {
         return date.toLocaleDateString();
     }
 
+    const handleDeleteBin = async (bin_id) => {
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/bin/${bin_id}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!res.ok) {
+                throw new Error("Failed to delete bin");
+            }
+            
+            setBinsData((prevBins) => prevBins.filter((bin) => bin.bin_id !== bin_id));
+            addToast("info", "Bin deleted successfully");
+        } catch (err) {
+            console.error("Error deleting bin:", err);
+            addToast("error", "Failed to delete bin");
+        }
+    }
     return (
         <div>
             <div className="profile-top-section">
@@ -95,7 +115,9 @@ const Profile = () => {
                 <div className="profile-container-bins">
                     {binsData.length > 0 ? (
                         binsData.map((bin) => (
-                            <Card key={bin._id} bin={bin} />
+                            <Card key={bin._id} 
+                                  bin={bin} 
+                                  onDelete={handleDeleteBin} />
                         ))
                     ) : (
                         <p>No bins available.</p>

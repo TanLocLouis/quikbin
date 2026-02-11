@@ -14,7 +14,7 @@
     gap: 0.5em;
 }
 
-.card-header-expand {
+.card-header-expand{
     align-self: flex-start;
 
     display: flex;

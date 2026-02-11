@@ -180,7 +180,7 @@ function Create() {
           body: JSON.stringify({data}),
         });
 
-        if (!res.ok) {
+        if (!res.ok && res.status !== 401) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
 

@@ -108,10 +108,27 @@ const getBinWithPassword = async (req, res) => {
     }
 }
 
+const deleteBinWithId = async (req, res) => {
+    const id = req.params.id;
+
+    try {
+       const result = await binService.deleteBinWithId(id);
+       if (result.deletedCount === 1) {
+           return res.status(200).json({ message: 'Bin deleted successfully' });
+       } else {
+           return res.status(404).json({ message: 'Bin not found' });
+       } 
+    } catch (err) {
+        console.error('[ERROR] Failed to delete bin', err);
+        res.status(500).json({ message: 'Failed to delete bin' });
+    }
+}
+
 export default {
     createBin,
     isLocked,
     getAllBins,
     getBinWithoutPassword,
-    getBinWithPassword
+    getBinWithPassword,
+    deleteBinWithId
 };

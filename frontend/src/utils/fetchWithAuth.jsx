@@ -4,8 +4,7 @@ const fetchWithAuth = async (url, options = {}) => {
             ...options,
         });
 
-        console.log(response)
-        if (response.status === 200) return response;
+        if (response.status != 403) return response;
         
         // Refresh access token
         // using refresh token
