@@ -91,7 +91,7 @@ const AuthProvider = ( { children } ) => {
                 throw new Error("Failed to refresh token");
             }
 
-            addToast("info", "Session refreshed successfully.");
+            // addToast("info", "Session refreshed successfully.");
             const data = await res.json();
             
             setAccessToken(data.accessToken);

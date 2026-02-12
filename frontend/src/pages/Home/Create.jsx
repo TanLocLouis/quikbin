@@ -171,11 +171,10 @@ function Create() {
     if (accessToken) {
       const url = import.meta.env.VITE_API_URL + '/api/bin/create/authenticated';
       try {
-        const res = await fetchWithAuth(url, {
+        const res = await fetchWithAuth(useAuth, url, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`,
           },
           body: JSON.stringify({data}),
         });

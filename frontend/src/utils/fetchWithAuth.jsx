@@ -1,9 +1,15 @@
-const fetchWithAuth = async (url, options = {}) => {
+const fetchWithAuth = async (context = null, url, options = {}) => {
     try {
+        console.log('Fetching with auth:', url);
+        console.log('Options:', options);
+        console.log('Access Token:', context ? context.accessToken : null);
         const response = await fetch(url, {
             ...options,
+            headers: {
+                ...options.headers,
+                'Authorization': `Bearer ${context ? context.accessToken : null}`,
+            },
         });
-
         if (response.status != 403) return response;
         
         // Refresh access token
@@ -15,8 +21,8 @@ const fetchWithAuth = async (url, options = {}) => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('refreshToken')}`,
                     },
+                    body: JSON.stringify({ refreshToken: localStorage.getItem('refreshToken') }),
                 });
 
                 if (!refreshResponse.ok) {
@@ -24,10 +30,10 @@ const fetchWithAuth = async (url, options = {}) => {
                 }
 
                 const refreshData = await refreshResponse.json();
-                localStorage.setItem('authToken', refreshData.accessToken);
+                context.accessToken = refreshData.accessToken;
 
                 // Retry original request with new token
-                return fetchWithAuth(url, { ...options, retry: false });
+                return fetchWithAuth(context, url, { ...options, retry: false });
             } catch (err) {
                 console.error('Token refresh error:', err);
                 throw err;

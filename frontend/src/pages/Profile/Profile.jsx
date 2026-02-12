@@ -14,7 +14,7 @@ const Profile = () => {
 
     const fetchUserProfile = async () => {
         try {
-            const res = await fetchWithAuth(`${import.meta.env.VITE_API_URL}/api/users/profile/${userInfo.username}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/profile/${userInfo.username}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -35,13 +35,12 @@ const Profile = () => {
 
     const fetchBinsData = async () => {
         try {
-            const res = await fetchWithAuth(`${import.meta.env.VITE_API_URL}/api/bin/all`, {
+            const res = await fetchWithAuth(useAuth ,`${import.meta.env.VITE_API_URL}/api/bin/all`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${accessToken}`
                 },
-            })
+            });
 
             if (!res.ok) {
                 throw new Error("Unable to fetch bin list");
