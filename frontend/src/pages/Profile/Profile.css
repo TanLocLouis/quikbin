@@ -36,3 +36,15 @@
 
 .profile-info {
 }
+
+.profile-edit {
+    justify-self: flex-end;
+    align-self: flex-end;
+
+    transition: transform 0.2s ease-in;
+}
+
+.profile-edit:hover {
+    cursor: pointer;
+    scale: 1.05;
+}

@@ -10,6 +10,7 @@ const fetchWithAuth = async (context = null, url, options = {}) => {
                 'Authorization': `Bearer ${context ? context.accessToken : null}`,
             },
         });
+        console.log('Response status:', response.status);
         if (response.status != 403) return response;
         
         // Refresh access token

@@ -62,7 +62,7 @@ const getBinWithoutPassword = async (req, res) => {
     }
 
     const id = req.params.id;
-    console.log("[DEBUG] fetching bin without password:", id);
+    // console.log("[DEBUG] fetching bin without password:", id);
 
     try {
         const bin = await binService.getBinWithoutPassword(id);
@@ -90,7 +90,7 @@ const getBinWithPassword = async (req, res) => {
     }
 
     const password = req.body.password;
-    console.log("[DEBUG] Password received:", password);
+    // console.log("[DEBUG] Password received:", password);
 
     const id = req.params.id;
 

@@ -11,7 +11,7 @@ const authenticate = (req, res, next) => {
     if (!token) {
         return next(); // No token provided, proceed as guest
     }
-
+    
     jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET, (err, user) => {
         if (err) {
             console.log('[STATUS] Invalid token ', err);
