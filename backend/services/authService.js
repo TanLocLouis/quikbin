@@ -34,7 +34,8 @@ async function signUp(userData) {
         username: user.username,
         expiresAt: Date.now() + 5 * 60 * 1000 // 5 minutes expiry
     });
-    sendMail(user.email, token);
+    const verificationLink = process.env.SERVER_URL + "/api/auth/verify-account?token=" + token;
+    sendMail(user.email, verificationLink);
 
     return result;
 }
@@ -120,9 +121,55 @@ async function refreshToken(token) {
     }
 }
 
+async function resetPassword(email) {
+    // Check if user exists
+    const user = await authModel.getUserByEmail(email);
+
+    if (!user) {
+        const err = new Error('User not found');
+        err.code = 'USER_NOT_FOUND';
+        throw err;
+    }
+
+    // Send password reset email
+    const token = await passwordUtil.genToken();
+    tokenMemory.set(token, {
+        username: user.username,
+        expiresAt: Date.now() + 5 * 60 * 1000 // 5 minutes
+    });
+    const verificationLink = "http://localhost:5173" + "/reset-password-form?token=" + token;
+    sendMail(user.email, verificationLink);
+}
+
+async function verifyResetToken(resetToken, newPassword) {
+    const tokenData = tokenMemory.get(resetToken);
+
+    if (!tokenData) {
+        const err = new Error('Invalid or expired token');
+        err.code = 'INVALID_TOKEN';
+        throw err;
+    }
+    if (Date.now() > tokenData.expiresAt) {
+        tokenMemory.delete(resetToken);
+        const err = new Error('Token has expired');
+        err.code = 'TOKEN_EXPIRED';
+        throw err;
+    }
+
+    const result = await authModel.getUserByUsername(tokenData.username);
+
+    const newPasswordHash = await passwordUtil.hashPassword(newPassword);
+    await authModel.updatePassword(tokenData.username, newPasswordHash);
+
+    tokenMemory.delete(resetToken);
+    return result;
+}
+
 export default {
     signUp,
     verifyAccount,
     login,
-    refreshToken
+    refreshToken,
+    resetPassword,
+    verifyResetToken,
 }

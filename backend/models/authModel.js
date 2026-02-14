@@ -30,6 +30,17 @@ const authModel = {
     async getUserByUsername(username) {
         const user = await usersCollection.findOne({ username: username });
         return user;
+    },
+    async getUserByEmail(email) {
+        const user = await usersCollection.findOne({ email: email });
+        return user;
+    },
+    async updatePassword(username, newPasswordHash) {
+        const result = await usersCollection.updateOne(
+            { username: username },
+            { $set: { passwordHash: newPasswordHash } }
+        );
+        return result;
     }
 }
 

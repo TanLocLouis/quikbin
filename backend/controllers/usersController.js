@@ -45,5 +45,5 @@ async function updateUserPassword(req, res) {
 
 export default {
     getUserProfile,
-    updateUserPassword
+    updateUserPassword,
 }

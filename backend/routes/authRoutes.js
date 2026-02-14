@@ -31,5 +31,15 @@ router.post('/refresh-token',
     authController.refreshToken
 );
 
+// POST /api/auth/reset-password
+router.post('/reset-password', 
+    authController.resetPassword
+);
+
+// POST /api/auth/verify-reset-token
+router.post('/verify-reset-token', 
+    authController.verifyResetToken
+);
+
 export default router;
 

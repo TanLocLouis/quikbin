@@ -29,7 +29,7 @@ function generateVerificationEmail(token) {
   `;
 }
 
-export async function sendMail(email, code) {
+export async function sendMail(email, verificationLink) {
   console.log("Sending mail to: ", email);
 
   if (!process.env.GMAIL_MAIL || !process.env.GMAIL_MAIL_TOKEN) {
@@ -46,8 +46,6 @@ export async function sendMail(email, code) {
         pass: process.env.GMAIL_MAIL_TOKEN,
       },
     });
-
-    const verificationLink = process.env.SERVER_URL + "/api/auth/verify-account?token=" + code;
 
     const email_content = generateVerificationEmail(verificationLink);
     const mailOptions = {

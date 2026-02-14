@@ -102,9 +102,64 @@ async function refreshToken(req, res) {
     }
 }
 
+async function resetPassword(req, res) {
+    if (!req.body) {
+        return res.status(400).json({ 
+            error: 'NO_DATA_PROVIDED',
+            message: 'No data provided'
+        });
+    }
+
+    const email = req.body.email;
+
+    try {
+        const result = await authService.resetPassword(email);
+        if (result) {
+            res.status(200).json({ 
+                message: 'Password reset email sent successfully' 
+            });
+        }
+    } catch (err) {
+        console.error('[ERROR] Failed to reset password', err);
+        res.status(500).json({ 
+            error: 'RESET_PASSWORD_FAILED',
+            message: 'Failed to reset password' 
+        });
+    }
+}
+
+async function verifyResetToken(req, res) {
+    if (!req.body) {
+        return res.status(400).json({ 
+            error: 'NO_DATA_PROVIDED',
+            message: 'No data provided'
+        });
+    }
+
+    const { resetToken } = req.body;
+    const { newPassword } = req.body;
+
+    try {
+        const result = await authService.verifyResetToken(resetToken, newPassword);
+        if (result) {
+            res.status(200).json({ 
+                message: 'Reset token is valid' 
+            });
+        }
+    } catch (err) {
+        console.error('[ERROR] Failed to verify reset token', err);
+        res.status(500).json({ 
+            error: 'VERIFY_RESET_TOKEN_FAILED',
+            message: 'Failed to verify reset token' 
+        });
+    }
+}
+
 export default {
     signUp,
     verifyAccount,
     login,
-    refreshToken
+    refreshToken,
+    resetPassword,
+    verifyResetToken
 }
