@@ -1,6 +1,6 @@
 # 📋 Project Overview
 
-This project offers a fast and lightweight solution for storing and sharing temporary content, similar to **Pastebin**. It's ideal for quick text sharing with minimal setup.
+This is my pet project offers a fast and lightweight solution for storing and sharing temporary content, similar to **Pastebin**.
 
 ---
 
@@ -11,7 +11,7 @@ This project offers a fast and lightweight solution for storing and sharing temp
 - **MongoDB** – Primary data storage
 - **Redis** *(optional)* – Caching layer for enhanced performance
 - **Docker** – Containerized deployment
-- **GitHub CI/CD** – Automated build and deployment pipelines
+- **GitHub CI/CD** – Automated build and deployment pipelines (Not implemented yet :D)
 
 ---
 
@@ -20,6 +20,7 @@ This project offers a fast and lightweight solution for storing and sharing temp
 ## To run the frontend locally:
 
 ```bash
+cd frontend
 npm run dev
 ```
 
@@ -27,7 +28,7 @@ npm run dev
 Open new terminal:
 ```bash
 cd backend
-node server.js
+npm run dev
 ```
 
 ## For the database
