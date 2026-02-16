@@ -30,7 +30,7 @@ function generateVerificationEmail(token) {
 }
 
 export async function sendMail(email, verificationLink) {
-  console.log("Sending mail to: ", email);
+  // console.log("Sending mail to: ", email);
 
   if (!process.env.GMAIL_MAIL || !process.env.GMAIL_MAIL_TOKEN) {
     console.warn(
@@ -57,7 +57,7 @@ export async function sendMail(email, verificationLink) {
 
     const info = await transporter.sendMail(mailOptions);
     // eslint-disable-next-line no-console
-    console.log("[INFO] MAIL SENDER: ", info.response);
+    // console.log("[INFO] MAIL SENDER: ", info.response);
     return info;
   } catch (err) {
     // eslint-disable-next-line no-console

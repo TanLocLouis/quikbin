@@ -24,9 +24,17 @@ const binModel = {
         const bin = await binsCollection.findOne({ bin_id: binId });
         return bin !== null;
     },
-    async getAllBinsByUserId(userId) {
-        const bins = await binsCollection.find({ userId: userId }).toArray();
+    async getAllBinsByUserId(userId, limit, offset) {
+        const bins = await binsCollection.find({ userId: userId })
+                                         .limit(limit)
+                                         .skip(offset)
+                                         .toArray();
+
         return bins;
+    },
+    async countAllBinsByUserId(userId) {
+        const count = await binsCollection.countDocuments({ userId: userId });
+        return count;
     },
     async getBinById(binId) {
         const bin = await binsCollection.findOne({ bin_id: binId });

@@ -1,8 +1,8 @@
 const fetchWithAuth = async (context = null, url, options = {}) => {
     try {
-        console.log('Fetching with auth:', url);
-        console.log('Options:', options);
-        console.log('Access Token:', context ? context.accessToken : null);
+        // console.log('Fetching with auth:', url);
+        // console.log('Options:', options);
+        // console.log('Access Token:', context ? context.accessToken : null);
         const response = await fetch(url, {
             ...options,
             headers: {
@@ -10,13 +10,13 @@ const fetchWithAuth = async (context = null, url, options = {}) => {
                 'Authorization': `Bearer ${context ? context.accessToken : null}`,
             },
         });
-        console.log('Response status:', response.status);
+        // console.log('Response status:', response.status);
         if (response.status != 403) return response;
         
         // Refresh access token
         // using refresh token
         if (options.retry !== false) {
-            console.log('Access token expired, attempting to refresh token...');
+            // console.log('Access token expired, attempting to refresh token...');
             try {
                 const refreshResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/refresh-token`, {
                     method: 'POST',

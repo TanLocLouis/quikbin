@@ -44,11 +44,19 @@ const getAllBins = async (req, res) => {
     }
 
     const userId = req.user.username;
+    const limit = Math.min(parseInt(req.query.limit) || 10, 100);
+    const offset = parseInt(req.query.offset) || 0;
 
     try {
-        const bins = await binService.getAllBinsByUser(userId);
+        const bins = await binService.getAllBinsByUser(userId, limit, offset);
+        const totalBins = await binService.countAllBinsByUser(userId);
         res.status(200).json( {
-            data: bins
+            data: bins,
+            pagination: {
+                limit: limit,
+                offset: offset,
+                totalBins: totalBins
+            }
         });
     } catch {
         console.error('[ERROR] Failed to retrieve all bins for user', userId);
@@ -67,15 +75,15 @@ const getBinWithoutPassword = async (req, res) => {
     try {
         const bin = await binService.getBinWithoutPassword(id);
         if (!bin) {
-            console.log('[STATUS] Bin not found', id);
+            // console.log('[STATUS] Bin not found', id);
             return res.status(404).json({ message: 'Bin not found' });
         }
 
         if (bin['password'] === '') {
-            console.log('[STATUS] Bin retrieved', bin);
+            // console.log('[STATUS] Bin retrieved', bin);
             return res.status(200).json(bin);
         } else {
-            console.log('[STATUS] Bin retrieved, password required');
+            // console.log('[STATUS] Bin retrieved, password required');
             return res.status(401).json({ message: 'Password required' });
         }
     } catch (err) {
@@ -97,7 +105,7 @@ const getBinWithPassword = async (req, res) => {
     try {
         const bin = await binService.getBinWithPassword(id, password);
         if (!bin) {
-            console.log('[STATUS] Bin not found', id);
+            // console.log('[STATUS] Bin not found', id);
             return res.status(404).json({ message: 'Bin not found' });
         }
 

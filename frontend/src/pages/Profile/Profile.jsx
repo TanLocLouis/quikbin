@@ -5,6 +5,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import Card from "../../components/Card/Card";
 import { fetchWithAuth } from "../../utils/fetchWithAuth";
 import EditProfile from "../EditProfile/EditProfile";
+import Pagination from "../../components/Pagination/Pagination";
 
 const Profile = () => {
     const { addToast } = useToast();
@@ -15,6 +16,11 @@ const Profile = () => {
 
     const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
 
+    const [limit, setLimit] = useState(10);
+    const [offset, setOffset] = useState(0);
+    const [totalBins, setTotalBins] = useState(0);
+
+    // Fetch user profile data
     const fetchUserProfile = async () => {
         try {
             const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/profile/${userInfo.username}`, {
@@ -36,9 +42,10 @@ const Profile = () => {
         }
     }
 
+    // Fetch bins data for the user with pagination
     const fetchBinsData = async () => {
         try {
-            const res = await fetchWithAuth(useAuth ,`${import.meta.env.VITE_API_URL}/api/bin/all`, {
+            const res = await fetchWithAuth(useAuth ,`${import.meta.env.VITE_API_URL}/api/bin/all?limit=${limit}&offset=${offset}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -51,6 +58,7 @@ const Profile = () => {
 
             const data = await res.json();
             setBinsData(data.data);
+            setTotalBins(data.pagination.totalBins);
         } catch (err) {
             console.error("Error fetching data", err);
             addToast("error", "Failed to load bins data");
@@ -59,8 +67,11 @@ const Profile = () => {
 
     useEffect(() => {
         fetchUserProfile();
-        fetchBinsData();
     }, []);
+
+    useEffect(() => {
+        fetchBinsData();
+    }, [offset, limit]);
 
     const convertToDateString = (isoString) => {
         const date = new Date(isoString);
@@ -136,6 +147,13 @@ const Profile = () => {
                         <p>No bins available.</p>
                     )}
                 </div>
+            </div>
+
+            <div>
+                <Pagination totalItems={totalBins}
+                            itemsPerPage={limit}
+                            currentPage={Math.floor(offset / limit) + 1}
+                            onPageChange={(page) => setOffset((page - 1) * limit)} />
             </div>
         </div>
     )

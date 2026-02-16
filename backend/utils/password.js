@@ -46,7 +46,7 @@ function authenticatePassword(req, res, next) {
 
   // Bin requires password
   if (!passwordProvided) {
-    console.log('[STATUS] Bin requires password but none provided');
+    // console.log('[STATUS] Bin requires password but none provided');
     return res.status(401).json({ message: 'Password required' });
   }
 
@@ -59,10 +59,10 @@ function authenticatePassword(req, res, next) {
 
     if (result) {
       req.isAuthenticated = true;
-      console.log('[STATUS] Password authentication successful');
+      // console.log('[STATUS] Password authentication successful');
       return next();
     } else {
-      console.log('[STATUS] Invalid password provided');
+      // console.log('[STATUS] Invalid password provided');
       return res.status(401).json({ message: 'Invalid password' });
     }
   });

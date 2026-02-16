@@ -38,9 +38,14 @@ async function isLocked(binId) {
     return locked;
 }
 
-async function getAllBinsByUser(userId) {
-    const bins = await binModel.getAllBinsByUserId(userId);
+async function getAllBinsByUser(userId, limit, offset) {
+    const bins = await binModel.getAllBinsByUserId(userId, limit, offset);
     return bins;
+}
+
+async function countAllBinsByUser(userId) {
+    const countBins = await binModel.countAllBinsByUserId(userId);
+    return countBins; 
 }
 
 async function getBinWithoutPassword(binId) {
@@ -74,6 +79,7 @@ export default {
     createBin,
     isLocked,
     getAllBinsByUser,
+    countAllBinsByUser,
     getBinWithoutPassword,
     getBinWithPassword,
     deleteBinWithId,
