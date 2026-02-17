@@ -18,6 +18,8 @@ const Profile = () => {
 
     const [limit, setLimit] = useState(10);
     const [offset, setOffset] = useState(0);
+    const [sortBy, setSortBy] = useState("createdAt");
+    const [sortOrder, setSortOrder] = useState("desc");
     const [totalBins, setTotalBins] = useState(0);
 
     // Fetch user profile data
@@ -45,7 +47,7 @@ const Profile = () => {
     // Fetch bins data for the user with pagination
     const fetchBinsData = async () => {
         try {
-            const res = await fetchWithAuth(useAuth ,`${import.meta.env.VITE_API_URL}/api/bin/all?limit=${limit}&offset=${offset}`, {
+            const res = await fetchWithAuth(useAuth ,`${import.meta.env.VITE_API_URL}/api/bins/?limit=${limit}&offset=${offset}&sortBy=${sortBy}&sortOrder=${sortOrder}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -80,7 +82,7 @@ const Profile = () => {
 
     const handleDeleteBin = async (bin_id) => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/bin/${bin_id}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/bins/${bin_id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",

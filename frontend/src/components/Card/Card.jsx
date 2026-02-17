@@ -13,6 +13,7 @@ const Card = ( { bin, onDelete }) => {
         expireTime,
         isShorternURL,
         createdAt,
+        closeBinAt
     } = bin;
 
     const handleExpandClicked = () => {
@@ -40,6 +41,7 @@ const Card = ( { bin, onDelete }) => {
                             <p><strong>Expires In:</strong> {expireTime ? `${expireTime} seconds` : "Never"}</p>
                             <p><strong>Shortened URL:</strong> {isShorternURL ? "Yes" : "No"}</p>
                             <p><strong>Created At:</strong> {new Date(createdAt).toLocaleString()}</p>
+                            <p><strong>Closed At:</strong> {new Date(closeBinAt).toLocaleString()}</p>
                         </div>
                     )}
                 </div>

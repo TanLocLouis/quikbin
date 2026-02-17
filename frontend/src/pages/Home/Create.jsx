@@ -169,7 +169,7 @@ function Create() {
     setIsSubmitting(true);
 
     if (accessToken) {
-      const url = import.meta.env.VITE_API_URL + '/api/bin/create/authenticated';
+      const url = import.meta.env.VITE_API_URL + '/api/bins/create/authenticated';
       try {
         const res = await fetchWithAuth(useAuth, url, {
           method: 'POST',
@@ -193,7 +193,7 @@ function Create() {
       }
     } 
     else {
-      const url = import.meta.env.VITE_API_URL + '/api/bin/create';
+      const url = import.meta.env.VITE_API_URL + '/api/bins/create';
       axios.post(url, {data})
       .then((response) => {
         navigate('/' + data.id.slice(0, 8));

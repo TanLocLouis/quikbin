@@ -1,4 +1,4 @@
-import binModel from '../models/binModel.js';
+import binsModel from '../models/binsModel.js';
 import passwordUtil from '../utils/password.js';
 
 async function createBin(binData) {
@@ -14,7 +14,7 @@ async function createBin(binData) {
 
     // Check if bin ID exists
     const id = bin.id;
-    const exists = await binModel.isBinExisted(id);
+    const exists = await binsModel.isBinExisted(id);
 
     if (exists) {
         const err = new Error('Bin ID already exists');
@@ -29,32 +29,32 @@ async function createBin(binData) {
     // Or they not use password, just insert to bins
     }
 
-    const result = await binModel.createBin(bin);
+    const result = await binsModel.createBin(bin);
     return result;
 }
 
 async function isLocked(binId) {
-    const locked = await binModel.isBinLocked(binId);
+    const locked = await binsModel.isBinLocked(binId);
     return locked;
 }
 
-async function getAllBinsByUser(userId, limit, offset) {
-    const bins = await binModel.getAllBinsByUserId(userId, limit, offset);
+async function getAllBinsByUser(userId, limit, offset, sortBy, sortOrder) {
+    const bins = await binsModel.getAllBinsByUserId(userId, limit, offset, sortBy, sortOrder);
     return bins;
 }
 
 async function countAllBinsByUser(userId) {
-    const countBins = await binModel.countAllBinsByUserId(userId);
+    const countBins = await binsModel.countAllBinsByUserId(userId);
     return countBins; 
 }
 
 async function getBinWithoutPassword(binId) {
-    const bin = await binModel.getBinById(binId);
+    const bin = await binsModel.getBinById(binId);
     return bin;
 }
 
 async function getBinWithPassword(binId, password) {
-    const bin = await binModel.getBinById(binId);
+    const bin = await binsModel.getBinById(binId);
 
     // If not found
     if (!bin) {
@@ -71,7 +71,7 @@ async function getBinWithPassword(binId, password) {
 }
 
 async function deleteBinWithId(binId) {
-    const result = await binModel.deleteBinById(binId);
+    const result = await binsModel.deleteBinById(binId);
     return result;
 }
 

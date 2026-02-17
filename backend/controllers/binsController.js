@@ -1,5 +1,5 @@
 
-import binService from '../services/binService.js';
+import binsService from '../services/binsService.js';
 
 const createBin = async (req, res) => {
     try {
@@ -9,7 +9,7 @@ const createBin = async (req, res) => {
             req.body.data.userId = req.user.username;
         }
 
-        const insertedBin = await binService.createBin(req.body.data);
+        const insertedBin = await binsService.createBin(req.body.data);
         res.status(201).json({ message: 'Bin created', id: insertedBin.insertedId });
     } catch (err) {
         if (err.code === 'BIN_ID_EXISTS') {
@@ -30,7 +30,7 @@ const isLocked = async (req, res) => {
     const id = req.params.id;
 
     try {
-        const isLocked = await binService.isLocked(id);
+        const isLocked = await binsService.isLocked(id);
         res.status(200).json({ isLocked: isLocked });
     } catch (err) {
         console.error('[ERROR] Failed to check if bin is locked', err);
@@ -43,13 +43,24 @@ const getAllBins = async (req, res) => {
         return res.status(401).json({ message: 'Unauthorized' });
     }
 
+    // Get query params for pagination and sorting
     const userId = req.user.username;
     const limit = Math.min(parseInt(req.query.limit) || 10, 100);
     const offset = parseInt(req.query.offset) || 0;
+    const sortBy = req.query.sortby || 'createdAt';
+    const sortOrder = req.query.order || 'desc';
+
+    // Validate sortBy and sortOrder
+    if (!['isShorternURL', 'createdAt', 'closeBinAt'].includes(sortBy)) {
+        return res.status(400).json({ message: 'Invalid sortBy parameter' });
+    }
+    if (!['asc', 'desc'].includes(sortOrder)) {
+        return res.status(400).json({ message: 'Invalid sortOrder parameter' });
+    }
 
     try {
-        const bins = await binService.getAllBinsByUser(userId, limit, offset);
-        const totalBins = await binService.countAllBinsByUser(userId);
+        const bins = await binsService.getAllBinsByUser(userId, limit, offset, sortBy, sortOrder);
+        const totalBins = await binsService.countAllBinsByUser(userId);
         res.status(200).json( {
             data: bins,
             pagination: {
@@ -58,8 +69,8 @@ const getAllBins = async (req, res) => {
                 totalBins: totalBins
             }
         });
-    } catch {
-        console.error('[ERROR] Failed to retrieve all bins for user', userId);
+    } catch (err) {
+        console.error('[ERROR] Failed to retrieve all bins for user: ', userId, err);
         res.status(500).json({ message: 'Failed to retrieve bins' });
     }
 }
@@ -73,7 +84,7 @@ const getBinWithoutPassword = async (req, res) => {
     // console.log("[DEBUG] fetching bin without password:", id);
 
     try {
-        const bin = await binService.getBinWithoutPassword(id);
+        const bin = await binsService.getBinWithoutPassword(id);
         if (!bin) {
             // console.log('[STATUS] Bin not found', id);
             return res.status(404).json({ message: 'Bin not found' });
@@ -103,7 +114,7 @@ const getBinWithPassword = async (req, res) => {
     const id = req.params.id;
 
     try {
-        const bin = await binService.getBinWithPassword(id, password);
+        const bin = await binsService.getBinWithPassword(id, password);
         if (!bin) {
             // console.log('[STATUS] Bin not found', id);
             return res.status(404).json({ message: 'Bin not found' });
@@ -120,7 +131,7 @@ const deleteBinWithId = async (req, res) => {
     const id = req.params.id;
 
     try {
-       const result = await binService.deleteBinWithId(id);
+       const result = await binsService.deleteBinWithId(id);
        if (result.deletedCount === 1) {
            return res.status(200).json({ message: 'Bin deleted successfully' });
        } else {

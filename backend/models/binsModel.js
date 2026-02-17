@@ -3,7 +3,7 @@ import client from '../db/db.js';
 const db = client.db('quikbin');
 const binsCollection = db.collection('bins');
 
-const binModel = {
+const binsModel = {
     async createBin(binData) {
         const result = await binsCollection.insertOne(
             {
@@ -24,8 +24,9 @@ const binModel = {
         const bin = await binsCollection.findOne({ bin_id: binId });
         return bin !== null;
     },
-    async getAllBinsByUserId(userId, limit, offset) {
+    async getAllBinsByUserId(userId, limit, offset, sortBy, sortOrder) {
         const bins = await binsCollection.find({ userId: userId })
+                                         .sort({ [sortBy]: sortOrder })
                                          .limit(limit)
                                          .skip(offset)
                                          .toArray();
@@ -54,4 +55,4 @@ const binModel = {
     }
 };
 
-export default binModel;
+export default binsModel;

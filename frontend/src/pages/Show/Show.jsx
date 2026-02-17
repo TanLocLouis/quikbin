@@ -18,7 +18,7 @@ function Show() {
 
   // Check if bin is locked 
   const checkPassword = async () => {
-    const url = import.meta.env.VITE_API_URL + '/api/bin/is-locked/' + id;
+    const url = import.meta.env.VITE_API_URL + '/api/bins/is-locked/' + id;
     try {
       const response  = await fetch(url, {
         method: 'GET',
@@ -44,7 +44,7 @@ function Show() {
 
   // Fetching data
   const fetchWithoutPassword = async () => {
-    const url = import.meta.env.VITE_API_URL + '/api/bin/no-password/' + id;
+    const url = import.meta.env.VITE_API_URL + '/api/bins/no-password/' + id;
 
     setIsLoading(true);
     try {
@@ -71,7 +71,7 @@ function Show() {
   }
 
   const fetchWithPassword = async (password) => {
-    const url = import.meta.env.VITE_API_URL + '/api/bin/with-password/' + id;
+    const url = import.meta.env.VITE_API_URL + '/api/bins/with-password/' + id;
     setIsLoading(true);
     try {
       const response =  await fetch(url, {
@@ -131,7 +131,7 @@ function Show() {
   // Copies
   const handleCopyLink = () => {
     addToast("info", "Link copied to clipboard");
-    const url = import.meta.env.VITE_HOST + '/' + data.id;
+    const url = import.meta.env.VITE_HOST + '/' + data.bin_id;
     navigator.clipboard.writeText(url).then(() => {
     }, (err) => {
     });
