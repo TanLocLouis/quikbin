@@ -5,7 +5,7 @@ import axios from 'axios';
 import './Create.css';
 
 import Switch from '@/components/Switch/Switch';
-import AutoResizeTextarea from '@/components/AutoResizeTextarea/AutoResizeTextarea';
+import AutoResizeTextarea from '@/components/AutoResizeTextArea/AutoResizeTextArea';
 import Button from '../../components/Button/Button';
 
 import { useToast } from '../../contexts/ToastContext';
