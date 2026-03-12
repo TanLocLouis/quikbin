@@ -32,7 +32,14 @@ cd frontend
 ```
 npm install
 ```
-3. Run.
+3.
+- Copy `.env.`test to `.env`
+- Edit these field
+```bash
+VITE_API_URL=http://localhost:3000
+VITE_HOST=http://localhost:5173
+```
+4. Run.
 ```
 npm run dev
 ```
