@@ -2,6 +2,19 @@
 
 This is my pet project offers a fast and lightweight solution for storing and sharing temporary content, similar to **Pastebin**.
 
+# Feature Overview
+- Create bin (store text) and can be open quickly with the generated link.
+- Can create password to protect text.
+- Set expire time.
+- Create custom link.
+- Create URL shorterner.
+- Signup, Login, Reset password, manage bins in profile (login is optional, you can use as Guest).
+- Darkmode.
+
+![Home](tools/img/home.png)
+![Profile](tools/img/profile.png)
+![Login](tools/img/login.png)
+
 ---
 
 # 🛠️ Technologies Used
@@ -32,7 +45,7 @@ cd frontend
 ```
 npm install
 ```
-3.
+3. Setup `.env`
 - Copy `.env.`test to `.env`
 - Edit these field
 ```bash
