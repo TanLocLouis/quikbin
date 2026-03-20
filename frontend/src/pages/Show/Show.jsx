@@ -169,9 +169,9 @@ function Show() {
 
   return (
     <>
-      <div style={{height: "60px"}}></div>
       <div className="show-wrapper">
         <div className="show-wrapper-animate"></div>
+        <div style={{height: "70px"}}></div>
         <div class="container">
 
           <div class="container-form">

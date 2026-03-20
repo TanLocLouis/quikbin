@@ -21,7 +21,8 @@ function Create() {
     '6 hours': 21600,
     '12 hours': 43200,
     '24 hours': 86400,
-    'Never': 0,
+    // Not acctually never, but many many years :)
+    'Never': 2147483647,
   };
 
   const { addToast } = useToast();
@@ -194,6 +195,7 @@ function Create() {
     } 
     else {
       const url = import.meta.env.VITE_API_URL + '/api/bins/create';
+      console.log(url, data);
       axios.post(url, {data})
       .then((response) => {
         navigate('/' + data.id.slice(0, 8));
@@ -216,7 +218,6 @@ function Create() {
 
   return (
     <>
-      <div style={{height: "60px"}}></div>
       <div className="create-wrapper">
         {/* <div className="create-wrapper-animate"></div> */}
         <div className="header">
