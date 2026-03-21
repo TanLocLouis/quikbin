@@ -21,8 +21,8 @@ function Create() {
     '6 hours': 21600,
     '12 hours': 43200,
     '24 hours': 86400,
-    // Not acctually never, but many many years :)
-    'Never': 2147483647,
+    // Not acctually never, but 100 years :)
+    'Never': 3600 * 24 * 365 * 100,
   };
 
   const { addToast } = useToast();
@@ -240,14 +240,9 @@ function Create() {
           <div style={{"display": "flex", "flexDirection": "column", "alignItems": "start"}}>
             <label style={{"margin": "0.5em", "marginBottom": "0em"}}>Expire after </label>
             <select id="header-expire" onChange={handleExpireChanged}>
-              <option value={expireList['1 minute']}>1 minutes</option>
-              <option value={expireList['15 minutes']} selected>15 minutes</option>
-              <option value="1800">30 minutes</option>
-              <option value="3600">1 hours</option>
-              <option value="21600">6 hours</option>
-              <option value="43200">12 hours</option>
-              <option value="86400">24 hours</option>
-              <option value="Never">Never</option>
+              {expireList && Object.keys(expireList).map((key) => (
+                <option key={key} value={expireList[key]} selected={expireList[key] === expireList['15 minutes']}>{key}</option>
+              ))}
             </select>
           </div>
         </div>

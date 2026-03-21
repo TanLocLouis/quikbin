@@ -146,17 +146,19 @@ const Profile = () => {
                                   onDelete={handleDeleteBin} />
                         ))
                     ) : (
-                        <p>No bins available.</p>
+                        <p className="profile-no-bins">No bins available.</p>
                     )}
                 </div>
             </div>
 
-            <div>
-                <Pagination totalItems={totalBins}
-                            itemsPerPage={limit}
-                            currentPage={Math.floor(offset / limit) + 1}
-                            onPageChange={(page) => setOffset((page - 1) * limit)} />
-            </div>
+            {totalBins > 0 &&
+                <div>
+                    <Pagination totalItems={totalBins}
+                                itemsPerPage={limit}
+                                currentPage={Math.floor(offset / limit) + 1}
+                                onPageChange={(page) => setOffset((page - 1) * limit)} />
+                </div>
+            }
         </div>
     )
 }
