@@ -257,7 +257,7 @@ function Create() {
               
               <div style={{"margin": "0.5em 0 0.5em 0"}}>
                 <AutoResizeTextarea
-                  minHeight="calc(100vh - 600px)" 
+                  minHeight="0px" 
                   value={data.text}
                   onChange={handleTextChanged}
                   placeholder="Your text here..."

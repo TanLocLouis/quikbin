@@ -4,3 +4,8 @@
     align-items: center;
     gap: 1em;
 }
+
+.pagination-info {
+    font-size: 1.2em;
+    color: var(--color-text-primary);
+}

@@ -20,7 +20,7 @@ const Pagination = ({ totalItems, itemsPerPage, currentPage, onPageChange }) => 
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}>
             </Button>
-            <span>Page {currentPage} of {totalPages}</span>
+            <span className="pagination-info">Page {currentPage} of {totalPages}</span>
             <Button 
                 width="100px" 
                 title="Next"
