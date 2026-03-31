@@ -6,6 +6,7 @@ import Card from "../../components/Card/Card";
 import { fetchWithAuth } from "../../utils/fetchWithAuth";
 import EditProfile from "../EditProfile/EditProfile";
 import Pagination from "../../components/Pagination/Pagination";
+import { useNavigate } from "react-router";
 
 const Profile = () => {
     const { addToast } = useToast();
@@ -21,6 +22,12 @@ const Profile = () => {
     const [sortBy, setSortBy] = useState("createdAt");
     const [sortOrder, setSortOrder] = useState("desc");
     const [totalBins, setTotalBins] = useState(0);
+
+    // If user is not logged in, show error toast and return early
+    const redirect = useNavigate();
+    if (!userInfo || !accessToken) {
+        redirect("/login")
+    }
 
     // Fetch user profile data
     const fetchUserProfile = async () => {

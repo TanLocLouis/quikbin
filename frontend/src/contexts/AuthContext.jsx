@@ -99,6 +99,7 @@ const AuthProvider = ( { children } ) => {
             return true;
         } catch {
             console.error("Failed to refresh token");
+            logout();
 
             return false;
         }

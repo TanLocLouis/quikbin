@@ -32,7 +32,7 @@ function Create() {
     id: uuidv4().slice(0, 8),
     text: "",
     password: "",
-    expireTime: expireList['15 minutes'],
+    expireTime: expireList['Never'],
     isShorternURL: false,
   });
   const [checkShorternURL, setCheckShorternURL] = useState(false);
@@ -241,7 +241,7 @@ function Create() {
             <label style={{"margin": "0.5em", "marginBottom": "0em"}}>Expire after </label>
             <select id="header-expire" onChange={handleExpireChanged}>
               {expireList && Object.keys(expireList).map((key) => (
-                <option key={key} value={expireList[key]} selected={expireList[key] === expireList['15 minutes']}>{key}</option>
+                <option key={key} value={expireList[key]} selected={expireList[key] === expireList['Never']}>{key}</option>
               ))}
             </select>
           </div>
