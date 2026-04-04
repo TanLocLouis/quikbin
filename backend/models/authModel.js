@@ -16,6 +16,10 @@ const authModel = {
         const result = await usersCollection.insertOne(user);
         return result;
     },
+    async deleteUser(username) {
+        const result = await usersCollection.deleteOne({ username: username });
+        return result;
+    },
     async isUserExisted(username) {
         const user = await usersCollection.findOne({ username: username });
         return user !== null;

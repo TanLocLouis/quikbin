@@ -13,6 +13,9 @@ import usersRoutes from './routes/usersRoutes.js';
 app.use('/api/bins', binsRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
+app.get('/api/health', (req, res) => {
+    res.json({ status: 'ok' });
+});
 
 // Backend Listen
 app.listen(3000, () => {

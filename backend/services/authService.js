@@ -18,11 +18,23 @@ async function signUp(userData) {
     user.passwordHash = await passwordUtil.hashPassword(userData.password);
 
     // Check if username exists
-    const exists = await authModel.isUserExisted(user.username);
-    if (exists) {
+    const userByUsername = await authModel.isUserExisted(user.username);
+    if (userByUsername) {
         const err = new Error('User already exists');
         err.code = 'USER_EXISTS';
         throw err;
+    }
+
+    // Delete if email exists but account is not active
+    const userByEmail = await authModel.getUserByEmail(user.email);
+    if (userByEmail) {
+        if (userByEmail.isActive) {
+            const err = new Error('Email already exists');
+            err.code = 'EMAIL_EXISTS';
+            throw err;
+        } else {
+            await authModel.deleteUser(userByEmail.username);
+        }
     }
 
     // Create user
@@ -62,7 +74,11 @@ async function verifyAccount(token) {
 }
 
 async function login(username, password) {
-    const user = await authModel.getUserByUsername(username);
+    const userByUsername = await authModel.getUserByUsername(username);
+    const userByEmail = await authModel.getUserByEmail(username);
+
+    const user = userByUsername || userByEmail;
+
     if (!user) {
         const err = new Error('User not found');
         err.code = 'USER_NOT_FOUND';

@@ -132,7 +132,7 @@ const Profile = () => {
                             <h2 className="profile-username">{profileData.username || "Username"}</h2>
                             <p className="profile-email"> 📧 {profileData.email || "Email"}</p>
                             <p className="profile-createdAt">📆 {profileData.createdAt ? convertToDateString(profileData.createdAt) : "N/A"}</p>
-                            <p className="profile-isVerified">{profileData.isVerified ? "✅ Verified" : "❌ Not Verified"}</p>
+                            {/* <p className="profile-isVerified">{profileData.isVerified ? "✅ Verified" : "❌ Not Verified"}</p> */}
                         </div>
 
                         <div className="profile-edit">
