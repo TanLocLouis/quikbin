@@ -88,6 +88,9 @@ const Profile = () => {
     }
 
     const handleDeleteBin = async (bin_id) => {
+        const isDelete = window.confirm("Are you sure you want to delete this bin? This action cannot be undone.");
+        if (!isDelete) return;
+
         try {
             const res = await fetch(`${import.meta.env.VITE_API_URL}/api/bins/${bin_id}`, {
                 method: "DELETE",

@@ -48,6 +48,27 @@ async function countAllBinsByUser(userId) {
     return countBins; 
 }
 
+async function getBinById(binId, password) {
+    const bin = await binsModel.getBinById(binId);
+    if (!bin) {
+        return null;
+    }
+
+    // Check if bin using password
+    if (bin.password) {
+        if (!password) {
+            return null;
+        }
+
+        const isMatch = await passwordUtil.comparePassword(password, bin.password);
+        if (isMatch) {
+            return null;
+        }
+    }
+
+    return bin;
+}
+
 async function getBinWithoutPassword(binId) {
     const bin = await binsModel.getBinById(binId);
     return bin;
@@ -80,7 +101,6 @@ export default {
     isLocked,
     getAllBinsByUser,
     countAllBinsByUser,
-    getBinWithoutPassword,
-    getBinWithPassword,
+    getBinById,
     deleteBinWithId,
 }

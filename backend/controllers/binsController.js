@@ -75,46 +75,21 @@ const getAllBins = async (req, res) => {
     }
 }
 
-const getBinWithoutPassword = async (req, res) => {
+const getBinById = async (req, res) => {
     if (!req.params.id) {
         return res.status(400).json({ message: 'Bin ID is required' });
     }
 
     const id = req.params.id;
-    // console.log("[DEBUG] fetching bin without password:", id);
 
-    try {
-        const bin = await binsService.getBinWithoutPassword(id);
-        if (!bin) {
-            // console.log('[STATUS] Bin not found', id);
-            return res.status(404).json({ message: 'Bin not found' });
-        }
-
-        if (bin['password'] === '') {
-            // console.log('[STATUS] Bin retrieved', bin);
-            return res.status(200).json(bin);
-        } else {
-            // console.log('[STATUS] Bin retrieved, password required');
-            return res.status(401).json({ message: 'Password required' });
-        }
-    } catch (err) {
-        console.error('[ERROR] Failed to retrieve bin', err);
-        res.status(500).json({ message: 'Failed to retrieve bin' });
-    }
-}
-
-const getBinWithPassword = async (req, res) => {
-    if (!req.params.id) {
-        return res.status(400).json({ message: 'Bin ID is required' });
+    let password = "";
+    if (req.body) {
+        password = req.body.password;
     }
 
-    const password = req.body.password;
-    // console.log("[DEBUG] Password received:", password);
-
-    const id = req.params.id;
-
     try {
-        const bin = await binsService.getBinWithPassword(id, password);
+        const bin = await binsService.getBinById(id, password);
+
         if (!bin) {
             // console.log('[STATUS] Bin not found', id);
             return res.status(404).json({ message: 'Bin not found' });
@@ -122,8 +97,8 @@ const getBinWithPassword = async (req, res) => {
 
         return res.status(200).json(bin);
     } catch (err) {
-        console.error('[ERROR] Failed to retrieve bin with password', err);
-        res.status(500).json({ message: 'Failed to retrieve bin with password' });
+        console.error('[ERROR] Failed to retrieve bin', err);
+        res.status(500).json({ message: 'Failed to retrieve bin' });
     }
 }
 
@@ -147,7 +122,6 @@ export default {
     createBin,
     isLocked,
     getAllBins,
-    getBinWithoutPassword,
-    getBinWithPassword,
+    getBinById,
     deleteBinWithId
 };

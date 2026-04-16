@@ -31,14 +31,9 @@ router.get('/is-locked/:id',
     binsController.isLocked
 );
 
-// GET /api/bins/no-password/:id
-router.get('/no-password/:id',
-    binsController.getBinWithoutPassword
-);
-
-// POST /api/bins/with-password/:id
-router.post('/with-password/:id',
-    binsController.getBinWithPassword
+// POST /api/bins/:id
+router.post('/:id',
+    binsController.getBinById
 );
 
 export default router;

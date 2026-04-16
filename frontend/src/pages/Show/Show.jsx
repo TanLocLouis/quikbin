@@ -44,12 +44,12 @@ function Show() {
 
   // Fetching data
   const fetchWithoutPassword = async () => {
-    const url = import.meta.env.VITE_API_URL + '/api/bins/no-password/' + id;
+    const url = import.meta.env.VITE_API_URL + '/api/bins/' + id;
 
     setIsLoading(true);
     try {
       const response =  await fetch(url, {
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -71,7 +71,7 @@ function Show() {
   }
 
   const fetchWithPassword = async (password) => {
-    const url = import.meta.env.VITE_API_URL + '/api/bins/with-password/' + id;
+    const url = import.meta.env.VITE_API_URL + '/api/bins/' + id;
     setIsLoading(true);
     try {
       const response =  await fetch(url, {

@@ -36,7 +36,7 @@
 }
 
 .card-header-content {
-    width: 90%;
+    width: calc(100% - 75px);
 }
 
 .card-text {
