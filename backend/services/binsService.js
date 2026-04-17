@@ -50,6 +50,7 @@ async function countAllBinsByUser(userId) {
 
 async function getBinById(binId, password) {
     const bin = await binsModel.getBinById(binId);
+
     if (!bin) {
         return null;
     }
@@ -61,7 +62,7 @@ async function getBinById(binId, password) {
         }
 
         const isMatch = await passwordUtil.comparePassword(password, bin.password);
-        if (isMatch) {
+        if (!isMatch) {
             return null;
         }
     }
@@ -96,6 +97,15 @@ async function deleteBinWithId(binId) {
     return result;
 }
 
+async function updateBinPassword(binId, newPassword) {
+    // Hash new password
+    const hashedPassword = await passwordUtil.hashPassword(newPassword);
+
+    // Update bin with new hashed password
+    const result = await binsModel.updateBinPassword(binId, hashedPassword);
+    return result;
+}
+
 export default {
     createBin,
     isLocked,
@@ -103,4 +113,5 @@ export default {
     countAllBinsByUser,
     getBinById,
     deleteBinWithId,
+    updateBinPassword,
 }

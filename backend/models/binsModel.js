@@ -52,6 +52,13 @@ const binsModel = {
     async deleteBinById(binId) {
         const result = await binsCollection.deleteOne({ bin_id: binId });
         return result;
+    },
+    async updateBinPassword(binId, newHashedPassword) {
+        const result = await binsCollection.updateOne(
+            { bin_id: binId },
+            { $set: { password: newHashedPassword } }
+        );
+        return result;
     }
 };
 

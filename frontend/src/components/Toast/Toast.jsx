@@ -14,8 +14,12 @@ const Toast = ({
     return () => clearTimeout(timer);
   }, [duration, onClose]);
 
+  const handleCloseToast = () => {
+    onClose();
+  };
+
   return (
-    <div className={`toast toast-${type}`}>
+    <div onClick={handleCloseToast} className={`toast toast-${type}`}>
       <span className="toast-message">{message}</span>
     </div>
   )

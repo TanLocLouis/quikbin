@@ -36,4 +36,9 @@ router.post('/:id',
     binsController.getBinById
 );
 
+// PATCH /api/bins/:id
+router.patch('/:id',
+    binsController.updateBinPassword
+);
+
 export default router;

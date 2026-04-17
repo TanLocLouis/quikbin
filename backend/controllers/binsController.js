@@ -118,10 +118,28 @@ const deleteBinWithId = async (req, res) => {
     }
 }
 
+const updateBinPassword = async (req, res) => {
+    const id = req.params.id;
+    const { password } = req.body;
+
+    try {
+        const result = await binsService.updateBinPassword(id, password);
+        if (result.modifiedCount === 1) {
+            return res.status(200).json({ message: 'Bin password updated successfully' });
+        } else {
+            return res.status(404).json({ message: 'Bin not found' });
+        }
+    } catch (err) {
+        console.error('[ERROR] Failed to update bin password', err);
+        res.status(500).json({ message: 'Failed to update bin password' });
+    }
+}
+
 export default {
     createBin,
     isLocked,
     getAllBins,
     getBinById,
-    deleteBinWithId
+    deleteBinWithId,
+    updateBinPassword,
 };
