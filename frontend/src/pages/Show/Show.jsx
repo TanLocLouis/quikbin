@@ -10,7 +10,7 @@ function Show() {
   const { id } = useParams();
   const [data, setData] = useState({});
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Need to fetch the data before render UI
   const [showLockedForm, setShowLockedForm] = useState(false);
   const [isShortenedURL, setIsShortenedURL] = useState(false);
 
@@ -248,6 +248,7 @@ function Show() {
                     {isShortenedURL &&
                       <Button width="100%"
                               height="50px"
+                              margin="0.5em 0 0 0"
                               title="Open this Link"
                               onClick={handleOpenLinkClicked}
                               type="button"

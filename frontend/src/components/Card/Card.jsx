@@ -26,7 +26,12 @@ const Card = ( { bin, onDelete }) => {
     }
 
     const redirect = useNavigate();
-    const handleBinClicked = (binId) => {
+    const handleBinClicked = (e, binId) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) {
+            return;
+        }
+
+        e.preventDefault();
         redirect(`/${binId}`);
     }
 
@@ -75,7 +80,11 @@ const Card = ( { bin, onDelete }) => {
                 </div>
 
                 <div className="card-header-content">
-                    <p onClick={() => handleBinClicked(bin_id)} className={`card-text${expanded ? " expanded" : ""}`}>{text}</p>
+                    <a onClick={(e) => handleBinClicked(e, bin_id)} className={`card-text${expanded ? " expanded" : ""}`} href={`${import.meta.env.VITE_HOST}/${bin_id}`} target="_blank" rel="noopener noreferrer">
+                        <p className="card-text">
+                            {text}
+                        </p>
+                    </a>
                     {expanded && (
                         <div className="card-details">
                             <p><strong>Bin ID:</strong> {bin_id}</p>

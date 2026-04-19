@@ -155,6 +155,8 @@ async function resetPassword(email) {
     });
     const verificationLink = process.env.SERVER_URL + "/reset-password-form?token=" + token;
     sendMail(user.email, verificationLink);
+
+    return true;
 }
 
 async function verifyResetToken(resetToken, newPassword) {

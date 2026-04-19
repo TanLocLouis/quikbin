@@ -9,6 +9,7 @@ const Login = () => {
         username: "",
         password: ""
     })
+    const [isLoginingIn, setIsLoggingIn] = useState(false);
 
     const handleLoginFormChanged = (e) => {
         setLoginForm({
@@ -23,6 +24,7 @@ const Login = () => {
     const handleLoginFormSubmitted = async (e) => {
         e.preventDefault();
 
+        setIsLoggingIn(true);
         const result = await login(LoginForm);
 
         if (result) {
@@ -30,6 +32,7 @@ const Login = () => {
             redirect("/");
         } else {
             addToast("error", "Login failed. Please check your credentials and try again.");
+            setIsLoggingIn(false);
         }
     }
 
@@ -59,8 +62,8 @@ const Login = () => {
                                 onChange={handleLoginFormChanged}/>
                         </div>
 
-                        <button type="submit" className="login-submit-button">
-                            Login
+                        <button type="submit" className="login-submit-button" disabled={isLoginingIn}>
+                            {isLoginingIn ? "Logging in..." : "Login"}
                         </button>
 
                         <div className="forgot-password-link">

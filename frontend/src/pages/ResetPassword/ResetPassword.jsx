@@ -15,11 +15,13 @@ const ResetPassword = () => {
             [e.target.name]: e.target.value
         });
     }
+    const [isResetting, setIsResetting] = useState(false);
 
     const redirect = useNavigate();
     const { addToast } = useToast();
     const handleResetPasswordFormSubmitted = async (e) => {
         e.preventDefault();
+        setIsResetting(true);
 
         try {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/reset-password`, {
@@ -32,7 +34,7 @@ const ResetPassword = () => {
                 })
             });
 
-            addToast("success", "Password reset email sent. Please check your inbox.");
+            addToast("info", "Password reset email sent. Please check your inbox.");
             if (!response.ok) {
                 throw new Error("Failed to reset password");
             }
@@ -41,6 +43,7 @@ const ResetPassword = () => {
         } catch (err) {
             console.error("Failed to reset password", err);
             addToast("error", "Failed to reset password. Please try again later.");
+            setIsResetting(false);
             return;
         }
     }
@@ -62,8 +65,8 @@ const ResetPassword = () => {
                                 onChange={handleResetFormChanged}/>
                         </div>
 
-                        <button type="submit" className="login-submit-button">
-                            Reset Password
+                        <button type="submit" className="login-submit-button" disabled={isResetting}>
+                            {isResetting ? "Resetting..." : "Reset Password"}
                         </button>
 
                         <div className="forgot-password-link">

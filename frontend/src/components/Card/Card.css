@@ -40,6 +40,8 @@
 }
 
 .card-text {
+    color: var(--color-text);
+
     text-overflow: ellipsis;
 
     overflow: hidden;
