@@ -11,9 +11,9 @@ This is my pet project offers a fast and lightweight solution for storing and sh
 - Signup, Login, Reset password, manage bins in profile (login is optional, you can use as Guest).
 - Darkmode.
 
+![Login](tools/img/login.png)
 ![Home](tools/img/home.png)
 ![Profile](tools/img/profile.png)
-![Login](tools/img/login.png)
 
 ---
 
