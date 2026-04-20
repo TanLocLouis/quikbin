@@ -7,6 +7,7 @@ const Card = ( { bin, onDelete }) => {
     const [expanded, setExpanded] = useState(false);
     const [isEditPasswordOpen, setIsEditPasswordOpen] = useState(false);
     const [newPassword, setNewPassword] = useState("");
+    const [isUpdating, setIsUpdating] = useState(false);
 
     const {
         _id,
@@ -45,7 +46,8 @@ const Card = ( { bin, onDelete }) => {
 
     const handleUpdateNewPassword = async (e) => {
         e.preventDefault();
-        
+        setIsUpdating(true);
+
         const url = import.meta.env.VITE_API_URL + '/api/bins/' + bin_id;
         try {
             const response  = await fetch(url, {
@@ -69,6 +71,8 @@ const Card = ( { bin, onDelete }) => {
             }
             addToast("error", "Failed to check bin status");
             return err;
+        } finally {
+            setIsUpdating(false);
         }
     }
 
@@ -95,9 +99,10 @@ const Card = ( { bin, onDelete }) => {
                             {isEditPasswordOpen && (
                                 <div>
                                     <form onSubmit={handleUpdateNewPassword}>
-                                        <input onChange={handleNewPasswordChanged} name="newPassword" placeholder="Type your new password...">
-                                        </input>
-                                        <button type="submit">Update</button>
+                                        <input onChange={handleNewPasswordChanged} name="newPassword" placeholder="Type your new password..." />
+                                        <button type="submit" disabled={isUpdating}>
+                                            {isUpdating ? "Updating..." : "Update"}
+                                        </button>
                                         <button type="button" onClick={handleEditClicked}>Cancel</button>
                                     </form>
                                 </div>

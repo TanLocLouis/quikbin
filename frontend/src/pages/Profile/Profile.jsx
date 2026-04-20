@@ -6,6 +6,7 @@ import Card from "../../components/Card/Card";
 import { fetchWithAuth } from "../../utils/fetchWithAuth";
 import EditProfile from "../EditProfile/EditProfile";
 import Pagination from "../../components/Pagination/Pagination";
+import LoadingSpinner from "@/components/Spinner/Spinner";
 import { useNavigate } from "react-router";
 
 const Profile = () => {
@@ -14,6 +15,7 @@ const Profile = () => {
 
     const [profileData, setProfileData] = useState({});
     const [binsData, setBinsData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
 
@@ -31,6 +33,7 @@ const Profile = () => {
 
     // Fetch user profile data
     const fetchUserProfile = async () => {
+        setIsLoading(true);
         try {
             const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/profile/${userInfo.username}`, {
                 method: "GET",
@@ -48,11 +51,14 @@ const Profile = () => {
         } catch (err) {
             console.error("Error fetching user profile:", err);
             addToast("error", "Failed to load user profile.");
+        } finally {
+            setIsLoading(false);
         }
     }
 
     // Fetch bins data for the user with pagination
     const fetchBinsData = async () => {
+        setIsLoading(true);
         try {
             const res = await fetchWithAuth(useAuth ,`${import.meta.env.VITE_API_URL}/api/bins/?limit=${limit}&offset=${offset}&sortBy=${sortBy}&sortOrder=${sortOrder}`, {
                 method: "GET",
@@ -71,6 +77,8 @@ const Profile = () => {
         } catch (err) {
             console.error("Error fetching data", err);
             addToast("error", "Failed to load bins data");
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -113,6 +121,17 @@ const Profile = () => {
 
     const handleEditClicked = () => {
         setIsEditProfileOpen(true);
+    } 
+
+    if (isLoading) {
+        return (
+        <>
+            {/* <h1>Loading...</h1> */}
+            <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100vh"}}>
+            <LoadingSpinner />
+            </div>
+        </>
+        )
     }
 
     return (
@@ -146,7 +165,7 @@ const Profile = () => {
             </div>
 
             {isEditProfileOpen && <EditProfile setIsEditProfileOpen={setIsEditProfileOpen}/>}
-
+            
             <div className="profile-container">
                 <div className="profile-container-bins">
                     {binsData.length > 0 ? (

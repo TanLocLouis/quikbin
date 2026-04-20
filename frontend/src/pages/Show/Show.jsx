@@ -156,7 +156,7 @@ function Show() {
 
   const curYear = new Date().getFullYear();
 
-  if (isLoading) {
+  if (isLoading && !showLockedForm) {
     return (
       <>
         {/* <h1>Loading...</h1> */}
