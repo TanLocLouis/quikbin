@@ -66,6 +66,7 @@ cd backend
 - Edit these field
 ```bash
 SERVER_URL=http://localhost:3000
+VITE_HOST=http://localhost:5173
 MONGO_DB_URL=your_mongodb_connection_string
 GMAIL_MAIL=your_gmail_address
 GMAIL_MAIL_TOKEN=your_gmail_app_password

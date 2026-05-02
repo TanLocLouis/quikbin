@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Button from "../Button/Button.jsx";
 import "./Pagination.css";
 
@@ -12,6 +13,11 @@ const Pagination = ({ totalItems, itemsPerPage, currentPage, onPageChange }) => 
         }
     };
 
+    const [isEditing, setIsEditing] = useState(false);
+    const handleEditPageNumber = () => {
+        setIsEditing(true);
+    }
+
     return (
         <div className="pagination">
             <Button 
@@ -20,7 +26,32 @@ const Pagination = ({ totalItems, itemsPerPage, currentPage, onPageChange }) => 
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}>
             </Button>
-            <span className="pagination-info">Page {currentPage} of {totalPages}</span>
+            {!isEditing && (
+                <span className="pagination-info" onClick={handleEditPageNumber}>Page {currentPage} of {totalPages}</span>
+            )}
+            {isEditing && (
+                <div>
+                    <input 
+                        type="number"
+                        placeholder="Jump to page..."
+                        style={{ width: "10em" }}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                const page = parseInt(e.target.value);
+                                handlePageChange(page);
+                                setIsEditing(false);
+                            }
+                        }}
+                        type="number"
+                    />
+                    <button onClick={() => {
+                        const page = parseInt(document.querySelector('input').value);
+                        handlePageChange(page);
+                        setIsEditing(false);
+                    }}>Confirm</button>
+                    <button onClick={() => setIsEditing(false)}>Cancel</button>
+                </div>
+            )}
             <Button 
                 width="100px" 
                 title="Next"

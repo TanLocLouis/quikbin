@@ -153,7 +153,7 @@ async function resetPassword(email) {
         username: user.username,
         expiresAt: Date.now() + 5 * 60 * 1000 // 5 minutes
     });
-    const verificationLink = process.env.SERVER_URL + "/reset-password-form?token=" + token;
+    const verificationLink = process.env.VITE_HOST + "/reset-password-form?token=" + token;
     sendMail(user.email, verificationLink);
 
     return true;
