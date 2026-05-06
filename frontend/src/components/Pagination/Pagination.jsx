@@ -1,8 +1,11 @@
 import { useState } from "react";
 import Button from "../Button/Button.jsx";
 import "./Pagination.css";
+import { useToast } from "../../contexts/ToastContext.jsx";
 
 const Pagination = ({ totalItems, itemsPerPage, currentPage, onPageChange }) => {
+    const { addToast } = useToast();
+
     // Caculate total pages
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -10,6 +13,8 @@ const Pagination = ({ totalItems, itemsPerPage, currentPage, onPageChange }) => 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
             onPageChange(page);
+        } else {
+            addToast("error", "Invalid page number");
         }
     };
 

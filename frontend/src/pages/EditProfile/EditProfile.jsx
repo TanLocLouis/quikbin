@@ -13,6 +13,8 @@ const EditProfile = ( { setIsEditProfileOpen }) => {
     }
 
     const [Data, setData] = useState({});
+    const [isUpdating, setIsUpdating] = useState(false);
+
     const handleFormChanged = (e) => {
         setData({
             ...Data,
@@ -31,6 +33,8 @@ const EditProfile = ( { setIsEditProfileOpen }) => {
             return;
         }
 
+        setIsUpdating(true);
+
         try {
             const res = await fetchWithAuth(authContext, `${import.meta.env.VITE_API_URL}/api/users/password`, {
                 method: "PATCH",
@@ -46,9 +50,13 @@ const EditProfile = ( { setIsEditProfileOpen }) => {
             if (!res.ok) {
                 throw new Error("Failed to update profile");
             }
+
+            addToast("info", "Password updated successfully.");
         } catch (err) {
             console.error("Error updating profile:", err);
-            addToast("error", "Failed to update profile.");
+            addToast("error", "Failed to update password.");
+        } finally {
+            setIsUpdating(false);
         }
     }
 
@@ -78,8 +86,10 @@ const EditProfile = ( { setIsEditProfileOpen }) => {
 
                 <Button type="submit" 
                         className="edit-profile-submit-button"
-                        title="Change Password"
-                >Update Password</Button> 
+                        title={isUpdating ? "Updating Password..." : "Update Password"}
+                        disabled={isUpdating}
+                >
+                </Button> 
             </form>
         </div>
     )
