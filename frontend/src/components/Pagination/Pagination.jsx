@@ -25,17 +25,25 @@ const Pagination = ({ totalItems, itemsPerPage, currentPage, onPageChange }) => 
 
     return (
         <div className="pagination">
-            <Button 
-                    width="100px" 
-                    title="Previous"
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}>
-            </Button>
             {!isEditing && (
-                <span className="pagination-info" onClick={handleEditPageNumber}>Page {currentPage} of {totalPages}</span>
+                <div>
+                    <Button 
+                            width="100px" 
+                            title="Previous"
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}>
+                    </Button>
+                    <span style={{ margin: "0 1em" }} className="pagination-info" onClick={handleEditPageNumber}>Page {currentPage} of {totalPages}</span>
+                    <Button 
+                        width="100px" 
+                        title="Next"
+                        onClick={() => handlePageChange(currentPage + 1)} 
+                        disabled={currentPage === totalPages}>
+                    </Button>
+                </div>
             )}
             {isEditing && (
-                <div>
+                <div className="pagination-edit">
                     <input 
                         type="number"
                         placeholder="Jump to page..."
@@ -49,20 +57,21 @@ const Pagination = ({ totalItems, itemsPerPage, currentPage, onPageChange }) => 
                         }}
                         type="number"
                     />
-                    <button onClick={() => {
+                    <button
+                        style={{ width: "75px" }}
+                        onClick={() => {
                         const page = parseInt(document.querySelector('input').value);
                         handlePageChange(page);
                         setIsEditing(false);
-                    }}>Confirm</button>
-                    <button onClick={() => setIsEditing(false)}>Cancel</button>
+                    }}>Ok</button>
+                    <button 
+                        style={{ width: "90px" }}
+                        onClick={() => setIsEditing(false)}
+                    >
+                        Cancel
+                    </button>
                 </div>
             )}
-            <Button 
-                width="100px" 
-                title="Next"
-                onClick={() => handlePageChange(currentPage + 1)} 
-                disabled={currentPage === totalPages}>
-            </Button>
         </div>
     )
 }

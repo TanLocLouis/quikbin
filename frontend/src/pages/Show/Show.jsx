@@ -1,5 +1,5 @@
 import { useParams } from "react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./Show.css";
 
 import LoadingSpinner from "@/components/Spinner/Spinner";
@@ -13,6 +13,13 @@ function Show() {
   const [isLoading, setIsLoading] = useState(true); // Need to fetch the data before render UI
   const [showLockedForm, setShowLockedForm] = useState(false);
   const [isShortenedURL, setIsShortenedURL] = useState(false);
+
+  const textAreaRef = useRef(null);
+  useEffect(() => {
+    if (textAreaRef.current) {
+      textAreaRef.current.style.height = textAreaRef.current.scrollHeight + "px";
+    }
+  }, [data.text]);
 
   const { addToast } = useToast();
 
@@ -239,7 +246,7 @@ function Show() {
 
                   <div>
                     <div>
-                      <textarea class="show-textarea" value={data.text}></textarea>
+                      <textarea ref={textAreaRef} class="show-textarea" value={data.text}></textarea>
                       {/* <AutoresizeTextArea 
                         value={data.text}
                       /> */}
@@ -249,7 +256,7 @@ function Show() {
                       <Button width="100%"
                               height="50px"
                               margin="0.5em 0 0 0"
-                              title="Open this Link"
+                              title="Open this Shortened Link"
                               onClick={handleOpenLinkClicked}
                               type="button"
                               >

@@ -256,11 +256,12 @@ function Create() {
               </div>
               
               <div style={{"margin": "0.5em 0 0.5em 0"}}>
+                <h4 style={{"margin-bottom": "0.2em"}}>Content*</h4>
                 <AutoResizeTextarea
                   minHeight="0px" 
                   value={data.text}
                   onChange={handleTextChanged}
-                  placeholder="Your text here..."
+                  placeholder="Enter your text here..."
                 />
               </div>
             </div>
