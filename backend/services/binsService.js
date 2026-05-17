@@ -106,6 +106,16 @@ async function updateBinPassword(binId, newPassword) {
     return result;
 }
 
+async function clearBinPassword(binId) {
+    const result = await binsModel.updateBinPassword(binId, '');
+    return result;
+}
+
+async function updateBinShortenURL(binId, isShorternURL) {
+    const result = await binsModel.updateBinShortenURL(binId, !!isShorternURL);
+    return result;
+}
+
 export default {
     createBin,
     isLocked,
@@ -114,4 +124,6 @@ export default {
     getBinById,
     deleteBinWithId,
     updateBinPassword,
+    clearBinPassword,
+    updateBinShortenURL,
 }

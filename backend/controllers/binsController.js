@@ -135,6 +135,42 @@ const updateBinPassword = async (req, res) => {
     }
 }
 
+const togglePassword = async (req, res) => {
+    const id = req.params.id;
+    const { enabled } = req.body;
+
+    if (enabled === true) {
+        return res.status(400).json({ message: 'Provide a password via PATCH /:id to enable password protection' });
+    }
+
+    try {
+        const result = await binsService.clearBinPassword(id);
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ message: 'Bin not found' });
+        }
+        return res.status(200).json({ message: 'Password protection disabled' });
+    } catch (err) {
+        console.error('[ERROR] Failed to toggle bin password', err);
+        res.status(500).json({ message: 'Failed to toggle bin password' });
+    }
+}
+
+const toggleShortenURL = async (req, res) => {
+    const id = req.params.id;
+    const { enabled } = req.body;
+
+    try {
+        const result = await binsService.updateBinShortenURL(id, !!enabled);
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ message: 'Bin not found' });
+        }
+        return res.status(200).json({ message: 'Shorten URL updated successfully' });
+    } catch (err) {
+        console.error('[ERROR] Failed to toggle shorten URL', err);
+        res.status(500).json({ message: 'Failed to toggle shorten URL' });
+    }
+}
+
 export default {
     createBin,
     isLocked,
@@ -142,4 +178,6 @@ export default {
     getBinById,
     deleteBinWithId,
     updateBinPassword,
+    togglePassword,
+    toggleShortenURL,
 };

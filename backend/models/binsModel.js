@@ -59,6 +59,13 @@ const binsModel = {
             { $set: { password: newHashedPassword } }
         );
         return result;
+    },
+    async updateBinShortenURL(binId, isShorternURL) {
+        const result = await binsCollection.updateOne(
+            { bin_id: binId },
+            { $set: { isShorternURL: isShorternURL } }
+        );
+        return result;
     }
 };
 

@@ -41,4 +41,14 @@ router.patch('/:id',
     binsController.updateBinPassword
 );
 
+// PATCH /api/bins/:id/password
+router.patch('/:id/password',
+    binsController.togglePassword
+);
+
+// PATCH /api/bins/:id/shorten-url
+router.patch('/:id/shorten-url',
+    binsController.toggleShortenURL
+);
+
 export default router;
