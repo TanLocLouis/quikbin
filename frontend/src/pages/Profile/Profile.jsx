@@ -25,6 +25,7 @@ const Profile = () => {
     const [sortBy, setSortBy] = useState("createdAt");
     const [sortOrder, setSortOrder] = useState("desc");
     const [totalBins, setTotalBins] = useState(0);
+    const [bookMarkedBins, setBookMarkedBins] = useState([]);
 
     // If user is not logged in, show error toast and return early
     const redirect = useNavigate();
@@ -83,8 +84,30 @@ const Profile = () => {
         }
     }
 
+    // Fetch the user's bookmarks
+    const fetchBookmarks = async () => {
+        try {
+            const res = await fetchWithAuth({ accessToken }, `${import.meta.env.VITE_API_URL}/api/bookmarks`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!res.ok) {
+                throw new Error("Unable to fetch bookmarks");
+            }
+
+            const data = await res.json();
+            setBookMarkedBins(data.data.map((bm) => bm.bin_id));
+        } catch (err) {
+            console.error("Error fetching bookmarks", err);
+        }
+    }
+
     useEffect(() => {
         fetchUserProfile();
+        fetchBookmarks();
     }, []);
 
     useEffect(() => {
@@ -119,6 +142,49 @@ const Profile = () => {
             addToast("error", "Failed to delete bin");
         }
     }
+
+    const handleBookMarkBin = async (bin_id, isBookMarked) => {
+        if (isBookMarked) {
+            try {
+                const res = await fetchWithAuth({ accessToken }, `${import.meta.env.VITE_API_URL}/api/bookmarks/${bin_id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+
+                if (!res.ok) {
+                    throw new Error("Failed to remove bookmark");
+                }
+
+                setBookMarkedBins((prev) => prev.filter((id) => id !== bin_id));
+                addToast("info", "Bin removed from bookmarks");
+            } catch (err) {
+                console.error("Error removing bin from bookmarks:", err);
+                addToast("error", "Failed to remove bin from bookmarks");
+            }
+        } else {
+            try {
+                const res = await fetchWithAuth({ accessToken }, `${import.meta.env.VITE_API_URL}/api/bookmarks/${bin_id}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+
+                if (!res.ok) {
+                    throw new Error("Failed to bookmark bin");
+                }
+
+                setBookMarkedBins((prev) => [...prev, bin_id]);
+                addToast("info", "Bin bookmarked");
+            } catch (err) {
+                console.error("Error bookmarking bin:", err);
+                addToast("error", "Failed to bookmark bin");
+            }
+        }
+    }
+
 
     const handleEditClicked = () => {
         setIsEditProfileOpen(true);
@@ -186,6 +252,8 @@ const Profile = () => {
                         binsData.map((bin) => (
                             <Card key={bin._id} 
                                   bin={bin} 
+                                  isBookMarked={bookMarkedBins.includes(bin.bin_id)}
+                                  onBookmark={() => handleBookMarkBin(bin.bin_id, bookMarkedBins.includes(bin.bin_id))}
                                   onDelete={handleDeleteBin} />
                         ))
                     ) : (

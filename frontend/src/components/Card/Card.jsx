@@ -4,7 +4,7 @@ import "./Card.css";
 import { useToast } from "../../contexts/ToastContext";
 import Switch from '@/components/Switch/Switch';
 
-const Card = ( { bin, onDelete }) => {
+const Card = ( { bin, isBookMarked, onBookmark, onDelete }) => {
     const [expanded, setExpanded] = useState(false);
     const [isEditPasswordOpen, setIsEditPasswordOpen] = useState(false);
     const [newPassword, setNewPassword] = useState("");
@@ -188,6 +188,11 @@ const Card = ( { bin, onDelete }) => {
                 </div>
 
                 <div className="card-header-expand">
+                    {isBookMarked ? (
+                        <svg onClick={onBookmark} xmlns="http://www.w3.org/2000/svg" width="1.2em" fill="var(--color-primary)" viewBox="0 0 384 512"><path d="M64 0C28.7 0 0 28.7 0 64L0 480c0 11.5 6.2 22.2 16.2 27.8s22.3 5.5 32.2-.4L192 421.3 335.5 507.4c9.9 5.9 22.2 6.1 32.2 .4S384 491.5 384 480l0-416c0-35.3-28.7-64-64-64L64 0z"/></svg>
+                    ) : (
+                        <svg onClick={onBookmark} xmlns="http://www.w3.org/2000/svg" width="1.2em" fill="var(--color-primary)" viewBox="0 0 384 512"><path d="M0 64C0 28.7 28.7 0 64 0L320 0c35.3 0 64 28.7 64 64l0 417.1c0 25.6-28.5 40.8-49.8 26.6L192 412.8 49.8 507.7C28.5 521.9 0 506.6 0 481.1L0 64zM64 48c-8.8 0-16 7.2-16 16l0 387.2 117.4-78.2c16.1-10.7 37.1-10.7 53.2 0L336 451.2 336 64c0-8.8-7.2-16-16-16L64 48z"/></svg>
+                    )}
                     <svg onClick={() => onDelete(bin_id)} xmlns="http://www.w3.org/2000/svg" width="1.5em" fill="var(--color-primary)" viewBox="0 0 640 640"><path d="M262.2 48C248.9 48 236.9 56.3 232.2 68.8L216 112L120 112C106.7 112 96 122.7 96 136C96 149.3 106.7 160 120 160L520 160C533.3 160 544 149.3 544 136C544 122.7 533.3 112 520 112L424 112L407.8 68.8C403.1 56.3 391.2 48 377.8 48L262.2 48zM128 208L128 512C128 547.3 156.7 576 192 576L448 576C483.3 576 512 547.3 512 512L512 208L464 208L464 512C464 520.8 456.8 528 448 528L192 528C183.2 528 176 520.8 176 512L176 208L128 208zM288 280C288 266.7 277.3 256 264 256C250.7 256 240 266.7 240 280L240 456C240 469.3 250.7 480 264 480C277.3 480 288 469.3 288 456L288 280zM400 280C400 266.7 389.3 256 376 256C362.7 256 352 266.7 352 280L352 456C352 469.3 362.7 480 376 480C389.3 480 400 469.3 400 456L400 280z"/></svg>
                 </div>
             </div>
