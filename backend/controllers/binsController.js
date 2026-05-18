@@ -171,6 +171,27 @@ const toggleShortenURL = async (req, res) => {
     }
 }
 
+const searchBins = async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const userId = req.user.username;
+    const query = req.query.query;
+
+    if (!query) {
+        return res.status(400).json({ message: 'Search query is required' });
+    }
+
+    try {
+        const bins = await binsService.searchBinsByUserId(userId, query);
+        res.status(200).json({ data: bins });
+    } catch (err) {
+        console.error('[ERROR] Failed to search bins for user: ', userId, err);
+        res.status(500).json({ message: 'Failed to search bins' });
+    }
+}
+
 export default {
     createBin,
     isLocked,
@@ -180,4 +201,5 @@ export default {
     updateBinPassword,
     togglePassword,
     toggleShortenURL,
+    searchBins
 };

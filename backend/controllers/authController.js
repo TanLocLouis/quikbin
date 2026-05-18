@@ -31,7 +31,8 @@ async function verifyAccount(req, res) {
         //     message: 'Account verified successfully' 
         // });
 
-        res.redirect('http://localhost:5173/verify-sign-up');
+        // res.redirect('http://localhost:5173/verify-sign-up');
+        res.redirect(`${process.env.VITE_HOST}/verify-sign-up`);
     } catch (err) {
         if (err.code === 'INVALID_TOKEN' || err.code === 'TOKEN_EXPIRED') {
             res.status(400).json({ 

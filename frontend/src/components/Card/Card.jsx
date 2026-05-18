@@ -167,7 +167,7 @@ const Card = ( { bin, isBookMarked, onBookmark, onDelete }) => {
                             </div>
                             {isEditPasswordOpen && (
                                 <div>
-                                    <form onSubmit={handleUpdateNewPassword}>
+                                    <form className="card-details-password-update" onSubmit={handleUpdateNewPassword}>
                                         <input onChange={handleNewPasswordChanged} name="newPassword" placeholder="Type your new password..." />
                                         <button type="submit" disabled={isUpdating}>
                                             {isUpdating ? "Updating..." : "Update"}
@@ -176,7 +176,7 @@ const Card = ( { bin, isBookMarked, onBookmark, onDelete }) => {
                                     </form>
                                 </div>
                             )}
-                            <p><strong>Expires In:</strong> {expireTime ? `${expireTime} seconds` : "Never"}</p>
+                            {/* <p><strong>Expires In:</strong> {expireTime ? `${expireTime} seconds` : "Never"}</p> */}
                             <div className="card-details-password">
                                 <p><strong>Shortened URL:</strong> {isShorternURL ? "Yes" : "No"}</p>
                                 <Switch checked={isShorternURL} onChange={handleUpdateCheckShortenURL} disabled={isUpdating}/>
@@ -189,7 +189,7 @@ const Card = ( { bin, isBookMarked, onBookmark, onDelete }) => {
 
                 <div className="card-header-expand">
                     {isBookMarked ? (
-                        <svg onClick={onBookmark} xmlns="http://www.w3.org/2000/svg" width="1.2em" fill="var(--color-primary)" viewBox="0 0 384 512"><path d="M64 0C28.7 0 0 28.7 0 64L0 480c0 11.5 6.2 22.2 16.2 27.8s22.3 5.5 32.2-.4L192 421.3 335.5 507.4c9.9 5.9 22.2 6.1 32.2 .4S384 491.5 384 480l0-416c0-35.3-28.7-64-64-64L64 0z"/></svg>
+                        <svg onClick={onBookmark} xmlns="http://www.w3.org/2000/svg" width="1.2em" fill="var(--color-success)" viewBox="0 0 384 512"><path d="M64 0C28.7 0 0 28.7 0 64L0 480c0 11.5 6.2 22.2 16.2 27.8s22.3 5.5 32.2-.4L192 421.3 335.5 507.4c9.9 5.9 22.2 6.1 32.2 .4S384 491.5 384 480l0-416c0-35.3-28.7-64-64-64L64 0z"/></svg>
                     ) : (
                         <svg onClick={onBookmark} xmlns="http://www.w3.org/2000/svg" width="1.2em" fill="var(--color-primary)" viewBox="0 0 384 512"><path d="M0 64C0 28.7 28.7 0 64 0L320 0c35.3 0 64 28.7 64 64l0 417.1c0 25.6-28.5 40.8-49.8 26.6L192 412.8 49.8 507.7C28.5 521.9 0 506.6 0 481.1L0 64zM64 48c-8.8 0-16 7.2-16 16l0 387.2 117.4-78.2c16.1-10.7 37.1-10.7 53.2 0L336 451.2 336 64c0-8.8-7.2-16-16-16L64 48z"/></svg>
                     )}

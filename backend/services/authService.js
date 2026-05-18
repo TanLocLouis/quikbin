@@ -133,7 +133,13 @@ async function refreshToken(token) {
             const error = new Error('Token has expired');
             error.code = 'TOKEN_EXPIRED';
             throw error;
+        } else if (err.code === 'INVALID_TOKEN') {
+            const error = new Error('Invalid token');
+            error.code = 'INVALID_TOKEN';
+            throw error;
         }
+
+        throw err;
     }
 }
 

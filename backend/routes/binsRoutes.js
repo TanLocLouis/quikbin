@@ -38,17 +38,26 @@ router.post('/:id',
 
 // PATCH /api/bins/:id
 router.patch('/:id',
+    authenticate,
     binsController.updateBinPassword
 );
 
 // PATCH /api/bins/:id/password
 router.patch('/:id/password',
+    authenticate,
     binsController.togglePassword
 );
 
 // PATCH /api/bins/:id/shorten-url
 router.patch('/:id/shorten-url',
+    authenticate,
     binsController.toggleShortenURL
+);
+
+// GET /api/bins/search?query=searchTerm
+router.get('/search',
+    authenticate,
+    binsController.searchBins
 );
 
 export default router;

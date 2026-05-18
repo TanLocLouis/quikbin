@@ -90,19 +90,24 @@ const AuthProvider = ( { children } ) => {
             });
 
             if (!res.ok) {
-                throw new Error("Failed to refresh token");
+                const errorData = await res.json();
+
+                if (errorData.error === 'INVALID_TOKEN' || errorData.error === 'TOKEN_EXPIRED') {
+                    alert.log("[DEBUG]: ", errorData);
+                    logout();
+                }
+
+                throw new Error(errorData.message || "Failed to refresh token");
             }
 
             // addToast("info", "Session refreshed successfully.");
             const data = await res.json();
-            
             setAccessToken(data.accessToken);
 
             return true;
-        } catch {
-            console.error("Failed to refresh token");
-            logout();
-
+        } catch (err) {
+            console.error("Failed to refresh token:", err.message);
+            
             return false;
         }
     }

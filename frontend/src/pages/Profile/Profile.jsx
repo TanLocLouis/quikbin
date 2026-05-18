@@ -18,6 +18,10 @@ const Profile = () => {
     const [binsData, setBinsData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    const [searchData, setSearchData] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [searchTimeout, setSearchTimeout] = useState(null);
+
     const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
 
     const [limit, setLimit] = useState(10);
@@ -29,9 +33,9 @@ const Profile = () => {
 
     // If user is not logged in, show error toast and return early
     const redirect = useNavigate();
-    if (!userInfo || !accessToken) {
-        redirect("/login")
-    }
+    // if (!userInfo || !accessToken) {
+    //     redirect("/login")
+    // }
 
     // Fetch user profile data
     const fetchUserProfile = async () => {
@@ -185,6 +189,49 @@ const Profile = () => {
         }
     }
 
+    // Debounce search input
+    // to avoid making API calls on every keystroke
+    const searchBins = (query) => {
+        if (searchTimeout) {
+            clearTimeout(searchTimeout);
+        }
+
+        const timeout = setTimeout(() => {
+            handleSearchBins(query);
+        }, 500);
+
+        setSearchTimeout(timeout);
+    }
+
+    const handleSearchBins = async (query) => {
+        setSearchQuery(query);
+
+        if (query.trim() === "") {
+            setSearchData([]);
+            return;
+        }
+
+        try {
+            const res = await fetchWithAuth({ accessToken }, `${import.meta.env.VITE_API_URL}/api/bins/search?query=${encodeURIComponent(query)}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!res.ok) {
+                throw new Error("Failed to search bins");
+            }
+
+            const data = await res.json();
+            console.log("[DEBUG] Search result: ", data);
+            setSearchData(data.data);
+        } catch (err) {
+            console.error("Error searching bins:", err);
+            addToast("error", "Failed to search bins");
+        }
+    }
+
 
     const handleEditClicked = () => {
         setIsEditProfileOpen(true);
@@ -247,19 +294,39 @@ const Profile = () => {
             {/* } */}
             
             <div className="profile-container">
-                <div className="profile-container-bins">
-                    {binsData.length > 0 ? (
-                        binsData.map((bin) => (
-                            <Card key={bin._id} 
-                                  bin={bin} 
-                                  isBookMarked={bookMarkedBins.includes(bin.bin_id)}
-                                  onBookmark={() => handleBookMarkBin(bin.bin_id, bookMarkedBins.includes(bin.bin_id))}
-                                  onDelete={handleDeleteBin} />
-                        ))
-                    ) : (
-                        <p className="profile-no-bins">No bins available.</p>
-                    )}
+                <div style={{"marginTop": "1em"}}>
+                    <input type="text" style={{"marginLeft": "1em"}} placeholder="Search bins..." className="profile-search-input" onChange={(e) => searchBins(e.target.value)} />
                 </div>
+
+                {searchQuery ? (
+                    <div className="profile-container-bins">
+                        {searchData.length > 0 ? (
+                            searchData.map((bin) => (
+                                <Card key={bin._id} 
+                                    bin={bin} 
+                                    isBookMarked={bookMarkedBins.includes(bin.bin_id)}
+                                    onBookmark={() => handleBookMarkBin(bin.bin_id, bookMarkedBins.includes(bin.bin_id))}
+                                    onDelete={handleDeleteBin} />
+                            ))
+                        ) : (
+                            <p className="profile-no-bins">No bins available.</p>
+                        )}
+                    </div>
+                ) : (
+                    <div className="profile-container-bins">
+                        {binsData.length > 0 ? (
+                            binsData.map((bin) => (
+                                <Card key={bin._id} 
+                                    bin={bin} 
+                                    isBookMarked={bookMarkedBins.includes(bin.bin_id)}
+                                    onBookmark={() => handleBookMarkBin(bin.bin_id, bookMarkedBins.includes(bin.bin_id))}
+                                    onDelete={handleDeleteBin} />
+                            ))
+                        ) : (
+                            <p className="profile-no-bins">No bins available.</p>
+                        )}
+                    </div>
+                )}                            
             </div>
 
             {totalBins > 0 &&

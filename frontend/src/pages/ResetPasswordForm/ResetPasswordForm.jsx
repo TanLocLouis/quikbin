@@ -89,7 +89,7 @@ const ResetPasswordForm = () => {
                         </button>
 
                         <div className="forgot-password-link">
-                            <label>Forgot password? Reset <a href="/reset-password">here</a></label>
+                            <label>Login <a href="/login">here</a></label>
                         </div>
                     </form>
                 </div>

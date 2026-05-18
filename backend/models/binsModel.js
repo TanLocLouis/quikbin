@@ -66,6 +66,16 @@ const binsModel = {
             { $set: { isShorternURL: isShorternURL } }
         );
         return result;
+    },
+    async searchBinsByUserId(userId, query) {
+        const bins = await binsCollection.find(
+            { $and: [
+                { userId: { $regex: userId, $options: 'i' } },
+                { text: { $regex: query, $options: 'i' } }
+            ] }
+        ).toArray();
+
+        return bins;
     }
 };
 

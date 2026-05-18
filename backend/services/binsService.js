@@ -116,6 +116,11 @@ async function updateBinShortenURL(binId, isShorternURL) {
     return result;
 }
 
+async function searchBinsByUserId(userId, query) {
+    const bins = await binsModel.searchBinsByUserId(userId, query);
+    return bins;
+}
+
 export default {
     createBin,
     isLocked,
@@ -126,4 +131,5 @@ export default {
     updateBinPassword,
     clearBinPassword,
     updateBinShortenURL,
+    searchBinsByUserId
 }

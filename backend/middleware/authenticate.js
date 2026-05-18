@@ -15,11 +15,11 @@ const authenticate = (req, res, next) => {
     jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET, (err, user) => {
         if (err) {
             if (err.name === 'TokenExpiredError') {
-                console.log('[STATUS] Token expired ', err);
+                // console.log('[STATUS] Token expired ', err);
                 return res.status(401).json({ message: 'Token expired' });
             }
 
-            console.log('[STATUS] Invalid token ', err);
+            // console.log('[STATUS] Invalid token ', err);
             return res.status(403).json({ message: 'Invalid token' });
         }
         req.user = user; // Attach user info to request
