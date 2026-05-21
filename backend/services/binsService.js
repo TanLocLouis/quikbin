@@ -38,13 +38,13 @@ async function isLocked(binId) {
     return locked;
 }
 
-async function getAllBinsByUser(userId, limit, offset, sortBy, sortOrder) {
-    const bins = await binsModel.getAllBinsByUserId(userId, limit, offset, sortBy, sortOrder);
+async function getAllBinsByUser(userId, limit, offset, sortBy, sortOrder, isShorternURL, searchQuery) {
+    const bins = await binsModel.getAllBinsByUserId(userId, limit, offset, sortBy, sortOrder, isShorternURL, searchQuery);
     return bins;
 }
 
-async function countAllBinsByUser(userId) {
-    const countBins = await binsModel.countAllBinsByUserId(userId);
+async function countAllBinsByUser(userId, searchQuery) {
+    const countBins = await binsModel.countAllBinsByUserId(userId, searchQuery);
     return countBins; 
 }
 

@@ -20,7 +20,7 @@ router.post('/create/authenticated',
     binsController.createBin
 );
 
-// GET /api/bins
+// GET /api/bins?limit=10&page=1&sortby=createdAt&order=desc&isShorternURL=true&search=searchTerm
 router.get('/',
     authenticate,
     binsController.getAllBins

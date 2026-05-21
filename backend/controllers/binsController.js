@@ -49,18 +49,23 @@ const getAllBins = async (req, res) => {
     const offset = parseInt(req.query.offset) || 0;
     const sortBy = req.query.sortby || 'createdAt';
     const sortOrder = req.query.order || 'desc';
+    const isShorternURL = req.query.isShorternURL || 'all';
+    const searchQuery = req.query.search || '';
 
     // Validate sortBy and sortOrder
-    if (!['isShorternURL', 'createdAt', 'closeBinAt'].includes(sortBy)) {
+    if (!['createdAt', 'expireTime'].includes(sortBy)) {
         return res.status(400).json({ message: 'Invalid sortBy parameter' });
     }
     if (!['asc', 'desc'].includes(sortOrder)) {
         return res.status(400).json({ message: 'Invalid sortOrder parameter' });
     }
+    if (!['all', 'true', 'false'].includes(isShorternURL)) {
+        return res.status(400).json({ message: 'Invalid isShorternURL parameter' });
+    }
 
     try {
-        const bins = await binsService.getAllBinsByUser(userId, limit, offset, sortBy, sortOrder);
-        const totalBins = await binsService.countAllBinsByUser(userId);
+        const bins = await binsService.getAllBinsByUser(userId, limit, offset, sortBy, sortOrder, isShorternURL, searchQuery);
+        const totalBins = await binsService.countAllBinsByUser(userId, searchQuery);
         res.status(200).json( {
             data: bins,
             pagination: {

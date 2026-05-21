@@ -27,9 +27,12 @@ const Profile = () => {
     const [limit, setLimit] = useState(10);
     const [offset, setOffset] = useState(0);
     const [sortBy, setSortBy] = useState("createdAt");
-    const [sortOrder, setSortOrder] = useState("desc");
+    const [sortOrder, setOrder] = useState("desc");
+    const [isShorternURL, setIsShorternURL] = useState('all')
+    const [isFilterOn, setIsFilterOn] = useState(false);
     const [totalBins, setTotalBins] = useState(0);
     const [bookMarkedBins, setBookMarkedBins] = useState([]);
+
 
     // If user is not logged in, show error toast and return early
     const redirect = useNavigate();
@@ -66,7 +69,7 @@ const Profile = () => {
     const fetchBinsData = async () => {
         setIsLoading(true);
         try {
-            const res = await fetchWithAuth(useAuth ,`${import.meta.env.VITE_API_URL}/api/bins/?limit=${limit}&offset=${offset}&sortBy=${sortBy}&sortOrder=${sortOrder}`, {
+            const res = await fetchWithAuth(useAuth ,`${import.meta.env.VITE_API_URL}/api/bins/?limit=${limit}&offset=${offset}&sortby=${sortBy}&order=${sortOrder}&isShorternURL=${isShorternURL}&search=${encodeURIComponent(searchQuery)}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -113,6 +116,11 @@ const Profile = () => {
         fetchUserProfile();
         fetchBookmarks();
     }, []);
+
+    useEffect(() => {
+        fetchBinsData();
+        setIsFilterOn(sortBy !== "createdAt" || sortOrder !== "desc" || isShorternURL !== "all");
+    }, [sortBy, sortOrder, isShorternURL]);
 
     useEffect(() => {
         fetchBinsData();
@@ -212,7 +220,8 @@ const Profile = () => {
         }
 
         try {
-            const res = await fetchWithAuth({ accessToken }, `${import.meta.env.VITE_API_URL}/api/bins/search?query=${encodeURIComponent(query)}`, {
+            // const res = await fetchWithAuth({ accessToken }, `${import.meta.env.VITE_API_URL}/api/bins/search?query=${encodeURIComponent(query)}`, {
+            const res = await fetchWithAuth(useAuth ,`${import.meta.env.VITE_API_URL}/api/bins/?limit=${limit}&offset=${offset}&sortby=${sortBy}&order=${sortOrder}&isShorternURL=${isShorternURL}&search=${encodeURIComponent(query)}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -293,9 +302,67 @@ const Profile = () => {
                 </div>
             {/* } */}
             
-            <div className="profile-container">
+            <div className="profile-container flex flex-col gap-4 ml-4">
                 <div style={{"marginTop": "1em"}}>
                     <input type="text" style={{"marginLeft": "1em"}} placeholder="Search bins..." className="profile-search-input" onChange={(e) => searchBins(e.target.value)} />
+                </div>
+                
+                <div style={{"marginLeft": "1em"}}>
+                <div className="flex flex-wrap items-center gap-3 text-xs text-textSecondary/70"
+                    style={{"display": "flex", "flexWrap": "wrap", "alignItems": "center", "gap": "0.75em", "fontSize": "0.75rem", "color": "var(--color-text-secondary)"}}>
+                    <label className="flex items-center gap-2">
+                        <span className="uppercase tracking-[0.1em] text-textSecondary/60">Sort by</span>
+                        <select
+                            value={sortBy}
+                            onChange={(event) => {
+                                setSortBy(event.target.value);
+                            }}
+                            className="rounded-full border border-border/10 bg-surface/80 px-3 py-1 text-[] font-semibold text-textPrimary"
+                        >
+                            <option value="createdAt">Created</option>
+                            <option value="expireTime">Expire time</option>
+                        </select>
+                    </label>
+                    <label className="flex items-center gap-2">
+                        <span className="uppercase tracking-[0.1em] text-textSecondary/60">Order</span>
+                        <select
+                            value={sortOrder}
+                            onChange={(event) => {
+                                setOrder(event.target.value);
+                            }}
+                            className="rounded-full border border-border/10 bg-surface/80 px-3 py-1 text-[11px] font-semibold text-textPrimary"
+                        >
+                            <option value="desc">Newest</option>
+                            <option value="asc">Oldest</option>
+                        </select>
+                    </label>
+                    <label className="flex items-center gap-2">
+                        <span className="uppercase tracking-[0.1em] text-textSecondary/60">Type</span>
+                        <select
+                            value={isShorternURL}
+                            onChange={(event) => {
+                                setIsShorternURL(event.target.value);
+                            }}
+                            className="rounded-full border border-border/10 bg-surface/80 px-3 py-1 text-[11px] font-semibold text-textPrimary"
+                        >
+                            <option value="all">All</option>
+                            <option value="true">Shorten URL</option>
+                            <option value="false">Normal text</option>
+                        </select>
+                    </label>
+                    {isFilterOn && (
+                        <label className="flex items-center gap-2">
+                            <button onClick={() => {
+                                setSearchQuery('');
+                                setIsShorternURL('all');
+                                setSortBy('createdAt');
+                                setSortOrder('desc');
+                            }}>
+                                Clear Filters
+                            </button>
+                        </label>
+                    )}
+                </div>
                 </div>
 
                 {searchQuery ? (

@@ -24,8 +24,25 @@ const binsModel = {
         const bin = await binsCollection.findOne({ bin_id: binId });
         return bin !== null;
     },
-    async getAllBinsByUserId(userId, limit, offset, sortBy, sortOrder) {
-        const bins = await binsCollection.find({ userId: userId })
+    async getAllBinsByUserId(userId, limit, offset, sortBy, sortOrder, isShorternURL, searchQuery) {
+
+        console.log(`[DEBUG] getAllBins - userId: ${userId}, limit: ${limit}, offset: ${offset}, sortBy: ${sortBy}, sortOrder: ${sortOrder}, isShorternURL: ${isShorternURL}, searchQuery: ${searchQuery}`);
+        // Fetch all bins
+        // if isShorternURL is not choosen
+        let query = { userId: userId };
+        if (isShorternURL === "true") {
+            console.log("[DEBUG] isShorternURL:", isShorternURL);
+            query = { userId: userId, isShorternURL: true }
+        } else if (isShorternURL === "false") {
+            query = { userId: userId, isShorternURL: false }
+        }
+
+        if (searchQuery) {
+            query = { ...query, text: { $regex: searchQuery, $options: 'i' } };
+        }
+
+        console.log("[DEBUG] query:", query);
+        const bins = await binsCollection.find(query)
                                          .sort({ [sortBy]: sortOrder })
                                          .limit(limit)
                                          .skip(offset)
@@ -33,8 +50,12 @@ const binsModel = {
 
         return bins;
     },
-    async countAllBinsByUserId(userId) {
-        const count = await binsCollection.countDocuments({ userId: userId });
+    async countAllBinsByUserId(userId, searchQuery) {
+        let query = { userId: userId };
+        if (searchQuery) {
+            query = { ...query, text: { $regex: searchQuery, $options: 'i' } };
+        }
+        const count = await binsCollection.countDocuments(query);
         return count;
     },
     async getBinById(binId) {
