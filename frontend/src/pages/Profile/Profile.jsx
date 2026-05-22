@@ -82,7 +82,7 @@ const Profile = () => {
 
             const data = await res.json();
             setBinsData(data.data);
-            console.log("[DEBUG] Bins data: ", data.data);
+            // console.log("[DEBUG] Bins data: ", data.data);
             setTotalBins(data.pagination.totalBins);
         } catch (err) {
             console.error("Error fetching data", err);
@@ -203,14 +203,12 @@ const Profile = () => {
     // Debounce search input
     // to avoid making API calls on every keystroke
     const searchBins = (query) => {
+        // console.log("[DEBUG] searchBins called with query: ", query, sortBy, sortOrder, isShorternURL);
+
         setSearchQuery(query);
 
         // If search query is empty
         // clear search results and show original bins data
-        if (query.trim() === "") {
-            setSearchData([]);
-            return;
-        }
 
         if (searchTimeout) {
             clearTimeout(searchTimeout);
@@ -239,7 +237,9 @@ const Profile = () => {
 
             const data = await res.json();
             // console.log("[DEBUG] Search result: ", data);
-            setSearchData(data.data);
+            // setSearchData(data.data);
+            setBinsData(data.data);
+            // console.log("[DEBUG] Search bins data: ", data.data);
             setTotalBins(data.pagination.totalBins);
         } catch (err) {
             console.error("Error searching bins:", err);
@@ -362,7 +362,7 @@ const Profile = () => {
                                 setSearchQuery('');
                                 setIsShorternURL('all');
                                 setSortBy('createdAt');
-                                setSortOrder('desc');
+                                setOrder('desc');
                             }}>
                                 Clear Filters
                             </button>
@@ -371,35 +371,20 @@ const Profile = () => {
                 </div>
                 </div>
 
-                {searchQuery ? (
-                    <div className="profile-container-bins">
-                        {searchData.length > 0 ? (
-                            searchData.map((bin) => (
-                                <Card key={bin._id} 
-                                    bin={bin} 
-                                    isBookMarked={bookMarkedBins.includes(bin.bin_id)}
-                                    onBookmark={() => handleBookMarkBin(bin.bin_id, bookMarkedBins.includes(bin.bin_id))}
-                                    onDelete={handleDeleteBin} />
-                            ))
-                        ) : (
-                            <p className="profile-no-bins">No bins available.</p>
-                        )}
-                    </div>
-                ) : (
-                    <div className="profile-container-bins">
-                        {binsData.length > 0 ? (
-                            binsData.map((bin) => (
-                                <Card key={bin._id} 
-                                    bin={bin} 
-                                    isBookMarked={bookMarkedBins.includes(bin.bin_id)}
-                                    onBookmark={() => handleBookMarkBin(bin.bin_id, bookMarkedBins.includes(bin.bin_id))}
-                                    onDelete={handleDeleteBin} />
-                            ))
-                        ) : (
-                            <p className="profile-no-bins">No bins available.</p>
-                        )}
-                    </div>
-                )}                            
+                
+                <div className="profile-container-bins">
+                    {binsData.length > 0 ? (
+                        binsData.map((bin) => (
+                            <Card key={bin._id} 
+                                bin={bin} 
+                                isBookMarked={bookMarkedBins.includes(bin.bin_id)}
+                                onBookmark={() => handleBookMarkBin(bin.bin_id, bookMarkedBins.includes(bin.bin_id))}
+                                onDelete={handleDeleteBin} />
+                        ))
+                    ) : (
+                        <p className="profile-no-bins">No bins available.</p>
+                    )}
+                </div>
             </div>
 
             {totalBins > 0 &&

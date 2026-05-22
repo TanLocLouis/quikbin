@@ -35,7 +35,7 @@ const dashboardModel = {
     },
     async setBinDeleted(binId, isDeleted) {
         const result = await db.collection('bins').updateOne({ bin_id: binId }, { $set: { isDeleted: isDeleted } });
-        console.log("[DEBUG] dashboardModel - setBinDeleted result:", result, binId, isDeleted);
+        // console.log("[DEBUG] dashboardModel - setBinDeleted result:", result, binId, isDeleted);
         return result;
     }
 }
