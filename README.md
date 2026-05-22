@@ -2,6 +2,8 @@
 
 This is my pet project offers a fast and lightweight solution for storing and sharing temporary content, similar to **Pastebin**.
 
+- This project use [another project](https://github.com/TanLocLouis/quikbin-dashboard) as an admin dashboard.
+
 # Feature Overview
 - Create bin (store text) and can be open quickly with the generated link.
 - Can create password to protect text.
@@ -9,11 +11,13 @@ This is my pet project offers a fast and lightweight solution for storing and sh
 - Create custom link.
 - Create URL shorterner.
 - Signup, Login, Reset password, manage bins in profile (login is optional, you can use as Guest).
+- Search and filter bins.
 - Darkmode.
 
 ![Login](tools/img/login.png)
 ![Home](tools/img/home.png)
 ![Profile](tools/img/profile.png)
+![Profile](tools/img/profile_01.png)
 
 ---
 
