@@ -82,6 +82,7 @@ const Profile = () => {
 
             const data = await res.json();
             setBinsData(data.data);
+            console.log("[DEBUG] Bins data: ", data.data);
             setTotalBins(data.pagination.totalBins);
         } catch (err) {
             console.error("Error fetching data", err);
@@ -118,7 +119,9 @@ const Profile = () => {
     }, []);
 
     useEffect(() => {
-        fetchBinsData();
+        // Filter also use search query
+        // searchData and binsData are different
+        searchBins(searchQuery);
         setIsFilterOn(sortBy !== "createdAt" || sortOrder !== "desc" || isShorternURL !== "all");
     }, [sortBy, sortOrder, isShorternURL]);
 
@@ -200,6 +203,15 @@ const Profile = () => {
     // Debounce search input
     // to avoid making API calls on every keystroke
     const searchBins = (query) => {
+        setSearchQuery(query);
+
+        // If search query is empty
+        // clear search results and show original bins data
+        if (query.trim() === "") {
+            setSearchData([]);
+            return;
+        }
+
         if (searchTimeout) {
             clearTimeout(searchTimeout);
         }
@@ -212,13 +224,6 @@ const Profile = () => {
     }
 
     const handleSearchBins = async (query) => {
-        setSearchQuery(query);
-
-        if (query.trim() === "") {
-            setSearchData([]);
-            return;
-        }
-
         try {
             // const res = await fetchWithAuth({ accessToken }, `${import.meta.env.VITE_API_URL}/api/bins/search?query=${encodeURIComponent(query)}`, {
             const res = await fetchWithAuth(useAuth ,`${import.meta.env.VITE_API_URL}/api/bins/?limit=${limit}&offset=${offset}&sortby=${sortBy}&order=${sortOrder}&isShorternURL=${isShorternURL}&search=${encodeURIComponent(query)}`, {
@@ -233,8 +238,9 @@ const Profile = () => {
             }
 
             const data = await res.json();
-            console.log("[DEBUG] Search result: ", data);
+            // console.log("[DEBUG] Search result: ", data);
             setSearchData(data.data);
+            setTotalBins(data.pagination.totalBins);
         } catch (err) {
             console.error("Error searching bins:", err);
             addToast("error", "Failed to search bins");
@@ -304,7 +310,7 @@ const Profile = () => {
             
             <div className="profile-container flex flex-col gap-4 ml-4">
                 <div style={{"marginTop": "1em"}}>
-                    <input type="text" style={{"marginLeft": "1em"}} placeholder="Search bins..." className="profile-search-input" onChange={(e) => searchBins(e.target.value)} />
+                    <input type="text" style={{"marginLeft": "1em"}} value={searchQuery} placeholder="Search bins..." className="profile-search-input" onChange={(e) => searchBins(e.target.value)} />
                 </div>
                 
                 <div style={{"marginLeft": "1em"}}>
@@ -320,7 +326,7 @@ const Profile = () => {
                             className="rounded-full border border-border/10 bg-surface/80 px-3 py-1 text-[] font-semibold text-textPrimary"
                         >
                             <option value="createdAt">Created</option>
-                            <option value="expireTime">Expire time</option>
+                            <option value="closeBinAt">Expire time</option>
                         </select>
                     </label>
                     <label className="flex items-center gap-2">

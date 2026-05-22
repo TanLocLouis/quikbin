@@ -53,7 +53,7 @@ const getAllBins = async (req, res) => {
     const searchQuery = req.query.search || '';
 
     // Validate sortBy and sortOrder
-    if (!['createdAt', 'expireTime'].includes(sortBy)) {
+    if (!['createdAt', 'closeBinAt'].includes(sortBy)) {
         return res.status(400).json({ message: 'Invalid sortBy parameter' });
     }
     if (!['asc', 'desc'].includes(sortOrder)) {

@@ -58,15 +58,15 @@ async function login(req, res) {
         if (err.code === 'ACCOUNT_INACTIVE') {
             res.status(400).json({ 
                 error: err.code,
-                message: 'Account is not verified' 
+                message: 'Account is not verified or has been deactivated' 
             });
             return;
         }
 
-        if (err.code === "INVALID_PASSWORD") {
+        if (err.code === "INVALID_CREDENTIALS") {
             res.status(400).json({ 
                 error: err.code,
-                message: 'Invalid password' 
+                message: 'Invalid username or password' 
             });
             return;
         }

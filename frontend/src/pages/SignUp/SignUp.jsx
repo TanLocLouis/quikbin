@@ -84,7 +84,7 @@ const SignUp = () => {
                         <label className="signup-note">Already have an account? Login <a href="/login">here</a></label>
 
                         {isSignUpSuccessful &&
-                            <label className="signup-note-success">Check your email to verify your account</label>
+                            <label className="signup-note-success">Check your email to verify new account</label>
                         }
                     </form>
                 </div>

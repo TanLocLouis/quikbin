@@ -61,6 +61,16 @@ const AuthProvider = ( { children } ) => {
             })
 
             if (!res.ok) {
+                const data = await res.json();
+                
+                if (data.error === 'ACCOUNT_INACTIVE') {
+                    throw new Error("Account is not verified. Please check your email for the verification link.");
+                }
+
+                if (data.error === 'INVALID_CREDENTIALS') {
+                    throw new Error("Invalid username or password. Please try again.");
+                }
+
                 throw new Error("Account is not verified.");
             }
 
@@ -71,9 +81,12 @@ const AuthProvider = ( { children } ) => {
             localStorage.setItem("refreshToken", data.refreshToken);
             localStorage.setItem("userInfo", JSON.stringify(data.data));
 
+            addToast("info", "Login successful!");
+
             return true;
         } catch (err) {
             console.error(err);
+            addToast("error", err.message || "Login failed. Please try again later.");
 
             return false;
         }

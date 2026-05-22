@@ -1,4 +1,5 @@
 import client from '../db/db.js';
+import { v4 as uuidv4 } from 'uuid';
 
 const db = client.db('quikbin');
 const usersCollection = db.collection('users');
@@ -6,18 +7,21 @@ const usersCollection = db.collection('users');
 const authModel = {
     async createUser(userData) {
         const user = {
+            userId: uuidv4(),
             username: userData.username,
             email: userData.email,
             passwordHash: userData.passwordHash,
+            role: 'USER',
             createdAt: new Date(Date.now()),
-            isActive: false
+            isActive: false,
+            isDeleted: false
         }
 
         const result = await usersCollection.insertOne(user);
         return result;
     },
-    async deleteUser(username) {
-        const result = await usersCollection.deleteOne({ username: username });
+    async deleteUser(userId) {
+        const result = await usersCollection.deleteOne({ userId: userId });
         return result;
     },
     async isUserExisted(username) {

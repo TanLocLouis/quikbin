@@ -32,5 +32,5 @@ async function updateUserPassword(userId, oldPassword, newPassword) {
 
 export default {
     getUserProfile,
-    updateUserPassword
+    updateUserPassword,
 }

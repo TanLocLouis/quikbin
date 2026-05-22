@@ -24,7 +24,7 @@ const usersModel = {
             { $set: { passwordHash: newPasswordHash } }
         );
         return result.modifiedCount > 0;
-    }
+    }, 
 }
 
 export default usersModel;

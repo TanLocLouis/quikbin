@@ -95,19 +95,20 @@ async function login(username, password) {
     // Check password
     const passwordMatch = await passwordUtil.comparePassword(password, user.passwordHash);
     if (!passwordMatch) {
-        const err = new Error('Invalid password');
-        err.code = 'INVALID_PASSWORD';
+        const err = new Error('Invalid username or password');
+        err.code = 'INVALID_CREDENTIALS';
         throw err;
     }
 
     // Generate tokens
-    const refreshToken = jwtUtils.generateRefreshToken({ username: user.username, email: user.email });
-    const accessToken = jwtUtils.generateAccessToken({ username: user.username });
+    const refreshToken = jwtUtils.generateRefreshToken({ username: user.username, email: user.email, role: user.role });
+    const accessToken = jwtUtils.generateAccessToken({ username: user.username, role: user.role });
 
     const userData = {
         username: user.username,
         email: user.email,
-        isActive: user.isActive
+        isActive: user.isActive,
+        role: user.role
     }
 
     return {
@@ -126,7 +127,7 @@ async function refreshToken(token) {
             throw err;
         }
 
-        const newAccessToken = jwt.generateAccessToken({ username: result.username });
+        const newAccessToken = jwt.generateAccessToken({ username: result.username, role: result.role });
         return newAccessToken;
     } catch (err) {
         if (err.name === 'TokenExpiredError') {

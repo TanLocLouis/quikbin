@@ -28,10 +28,10 @@ const Login = () => {
         const result = await login(LoginForm);
 
         if (result) {
-            addToast("info", "Login successful!");
+            // addToast("info", "Login successful!");
             redirect("/");
         } else {
-            addToast("error", "Login failed. Please check your credentials and try again.");
+            // addToast("error", "Login failed. Please check your credentials and try again.");
             setIsLoggingIn(false);
         }
     }
@@ -68,6 +68,9 @@ const Login = () => {
 
                         <div className="forgot-password-link">
                             <label>Forgot password? Reset <a href="/reset-password">here</a></label>
+                        </div>
+                        <div className="forgot-password-link">
+                            <label>Don't have account? Register <a href="/sign-up">here</a></label>
                         </div>
                     </form>
                 </div>

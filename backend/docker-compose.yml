@@ -1,14 +1,14 @@
 version: '3.8'
 
 services:
-  backend:
+  quikbin-backend:
     image: node:lts
     working_dir: /app
     volumes:
       - ./:/app
     command: sh -c "npm install && node server.js"
     ports:
-      - "3000:3000"
+      - "3002:3000"
     environment:
       - NODE_ENV=development
     restart: unless-stopped

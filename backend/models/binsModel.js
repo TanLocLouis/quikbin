@@ -14,6 +14,7 @@ const binsModel = {
                 isShorternURL: binData.isShorternURL,
                 createdAt: new Date(Date.now()),
                 closeBinAt: new Date(Date.now() + 1000 * binData.expireTime),
+                isDeleted: false,
 
                 userId: binData.userId || null,
             }
@@ -26,12 +27,12 @@ const binsModel = {
     },
     async getAllBinsByUserId(userId, limit, offset, sortBy, sortOrder, isShorternURL, searchQuery) {
 
-        console.log(`[DEBUG] getAllBins - userId: ${userId}, limit: ${limit}, offset: ${offset}, sortBy: ${sortBy}, sortOrder: ${sortOrder}, isShorternURL: ${isShorternURL}, searchQuery: ${searchQuery}`);
+        // console.log(`[DEBUG] getAllBins - userId: ${userId}, limit: ${limit}, offset: ${offset}, sortBy: ${sortBy}, sortOrder: ${sortOrder}, isShorternURL: ${isShorternURL}, searchQuery: ${searchQuery}`);
         // Fetch all bins
         // if isShorternURL is not choosen
         let query = { userId: userId };
         if (isShorternURL === "true") {
-            console.log("[DEBUG] isShorternURL:", isShorternURL);
+            // console.log("[DEBUG] isShorternURL:", isShorternURL);
             query = { userId: userId, isShorternURL: true }
         } else if (isShorternURL === "false") {
             query = { userId: userId, isShorternURL: false }
@@ -41,7 +42,7 @@ const binsModel = {
             query = { ...query, text: { $regex: searchQuery, $options: 'i' } };
         }
 
-        console.log("[DEBUG] query:", query);
+        // console.log("[DEBUG] query:", query);
         const bins = await binsCollection.find(query)
                                          .sort({ [sortBy]: sortOrder })
                                          .limit(limit)
