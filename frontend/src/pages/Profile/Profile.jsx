@@ -134,8 +134,8 @@ const Profile = () => {
         return date.toLocaleDateString();
     }
 
-    const handleDeleteBin = async (bin_id) => {
-        const isDelete = window.confirm("Are you sure you want to delete this bin? This action cannot be undone.");
+    const handleDeleteBin = async (bin_id, text) => {
+        const isDelete = window.confirm(`Are you sure you want to delete this bin?  This action cannot be undone.\n\n${text}`);
         if (!isDelete) return;
 
         try {

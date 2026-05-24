@@ -1,5 +1,6 @@
 import { useParams } from "react-router";
 import { useEffect, useState, useRef } from "react";
+import Editor from "@monaco-editor/react";
 import "./Show.css";
 
 import LoadingSpinner from "@/components/Spinner/Spinner";
@@ -13,6 +14,8 @@ function Show() {
   const [isLoading, setIsLoading] = useState(true); // Need to fetch the data before render UI
   const [showLockedForm, setShowLockedForm] = useState(false);
   const [isShortenedURL, setIsShortenedURL] = useState(false);
+
+  const [language, setLanguage] = useState("plaintext");
 
   const textAreaRef = useRef(null);
   useEffect(() => {
@@ -246,11 +249,52 @@ function Show() {
 
                   <div>
                     <div>
-                      <textarea ref={textAreaRef} class="show-textarea" value={data.text}></textarea>
+                      {/* <textarea ref={textAreaRef} class="show-textarea" value={data.text}></textarea> */}
                       {/* <AutoresizeTextArea 
                         value={data.text}
                       /> */}
                     </div>
+                    
+                    <div style={{margin: "0.5em 0"}}>
+                      <select
+                        value={language}
+                        onChange={(e) => setLanguage(e.target.value)}
+                      >
+                        <option value="plaintext">Plain Text</option>
+                        <option value="cpp">C++</option>
+                        <option value="csharp">C#</option>
+                        <option value="css">CSS</option>
+                        <option value="go">Go</option>
+                        <option value="html">HTML</option>
+                        <option value="java">Java</option>
+                        <option value="javascript">JavaScript</option>
+                        <option value="json">JSON</option>
+                        <option value="markdown">Markdown</option>
+                        <option value="php">PHP</option>
+                        <option value="python">Python</option>
+                        <option value="ruby">Ruby</option>
+                        <option value="shell">Shell</option>
+                        <option value="sql">SQL</option>
+                        <option value="typescript">TypeScript</option>
+                        <option value="yaml">YAML</option>
+                      </select>
+                    </div>
+
+                    <Editor
+                      height="calc(100vh - 450px)"
+                      language={language}
+                      theme="vs-dark"
+                      defaultValue={data.text}
+                      options={{
+                        readOnly: true,
+                        minimap: { enabled: false },
+                        scrollbar: {
+                          vertical: "hidden",
+                          horizontal: "hidden",
+                        },
+                        lineNumbers: "off",
+                      }}
+                    />
                     
                     {isShortenedURL &&
                       <Button width="100%"

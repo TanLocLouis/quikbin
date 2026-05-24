@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { v4 as uuidv4, validate } from 'uuid';
 import axios from 'axios';
+import { Editor } from '@monaco-editor/react';
 import './Create.css';
 
 import Switch from '@/components/Switch/Switch';
@@ -39,6 +40,7 @@ function Create() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const textAreaRef = useRef(null);
+  const [language, setLanguage] = useState("plaintext");
   const handleClear = () => {
     setData({
       ...data,
@@ -51,6 +53,10 @@ function Create() {
   useEffect(() => {
     document.getElementById("header-id").value = data.id;
   }, []);
+
+  useEffect(() => {
+    console.log(data);
+  }, [data])
 
   // ID state
   const validateId = (id) => {
@@ -84,22 +90,22 @@ function Create() {
   }
 
   // Text area state
-  const validateText = (text) => {
-    if (!text) {
-      addToast("warning", "Text cannot be empty");
-      return false;
-    }
+  // const validateText = (text) => {
+  //   if (!text) {
+  //     addToast("warning", "Text cannot be empty");
+  //     return false;
+  //   }
 
-    if (text.length > 100000) {
-      addToast("warning", "Text cannot be longer than 100000 characters");
-      return false;
-    }
+  //   if (text.length > 100000) {
+  //     addToast("warning", "Text cannot be longer than 100000 characters");
+  //     return false;
+  //   }
 
-    return true;
-  }
+  //   return true;
+  // }
 
-  const handleTextChanged = (e) => {
-    const text = e.target.value;
+  const handleTextChanged = (value) => {
+    const text = value;
 
     setData({
       ...data,
@@ -159,7 +165,6 @@ function Create() {
   const navigate = useNavigate();
   const handleCreate = async () => {
     const isValidInput = validateId(data.id)
-    && validateText(data.text)
     && validatePassword(data.password);
 
     if (!isValidInput) {
@@ -257,11 +262,56 @@ function Create() {
               
               <div style={{"margin": "0.5em 0 0.5em 0"}}>
                 <h4 style={{"margin-bottom": "0.2em"}}>Content*</h4>
-                <AutoResizeTextarea
+                {/* <AutoResizeTextarea
                   minHeight="0px" 
                   value={data.text}
                   onChange={handleTextChanged}
                   placeholder="Enter your text here..."
+                /> */}
+
+                <div style={{margin: "0.5em 0"}}>
+                  <select
+                    value={language}
+                    onChange={(e) => setLanguage(e.target.value)}
+                  >
+                    <option value="plaintext">Plain Text</option>
+                    <option value="cpp">C++</option>
+                    <option value="csharp">C#</option>
+                    <option value="css">CSS</option>
+                    <option value="go">Go</option>
+                    <option value="html">HTML</option>
+                    <option value="java">Java</option>
+                    <option value="javascript">JavaScript</option>
+                    <option value="json">JSON</option>
+                    <option value="markdown">Markdown</option>
+                    <option value="php">PHP</option>
+                    <option value="python">Python</option>
+                    <option value="ruby">Ruby</option>
+                    <option value="shell">Shell</option>
+                    <option value="sql">SQL</option>
+                    <option value="typescript">TypeScript</option>
+                    <option value="yaml">YAML</option>
+                  </select>
+                </div>
+
+                <Editor
+                  value={data.text}
+                  onChange={(value) => handleTextChanged(value)}
+                  placeholder="Enter your text here..."
+
+                  height="calc(100vh - 550px)"
+                  language={language}
+                  theme="vs-dark"
+                  defaultValue={data.text}
+                  options={{
+                    // readOnly: true,
+                    minimap: { enabled: false },
+                    scrollbar: {
+                      vertical: "hidden",
+                      horizontal: "hidden",
+                    },
+                    lineNumbers: "off",
+                  }}
                 />
               </div>
             </div>
