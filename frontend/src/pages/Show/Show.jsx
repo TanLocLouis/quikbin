@@ -281,16 +281,16 @@ function Show() {
                     </div>
 
                     <Editor
-                      height="calc(100vh - 450px)"
+                      height="max(calc(100vh - 450px), 200px)"
                       language={language}
                       theme="vs-dark"
                       defaultValue={data.text}
                       options={{
                         readOnly: true,
+                        domReadOnly: true,
                         minimap: { enabled: false },
                         scrollbar: {
                           vertical: "hidden",
-                          horizontal: "hidden",
                         },
                         lineNumbers: "off",
                       }}

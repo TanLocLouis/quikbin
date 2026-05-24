@@ -54,9 +54,9 @@ function Create() {
     document.getElementById("header-id").value = data.id;
   }, []);
 
-  useEffect(() => {
-    console.log(data);
-  }, [data])
+  // useEffect(() => {
+  //   console.log(data);
+  // }, [data])
 
   // ID state
   const validateId = (id) => {
@@ -261,7 +261,7 @@ function Create() {
               </div>
               
               <div style={{"margin": "0.5em 0 0.5em 0"}}>
-                <h4 style={{"margin-bottom": "0.2em"}}>Content*</h4>
+                {/* <h4 style={{"margin-bottom": "0.2em"}}>Content*</h4> */}
                 {/* <AutoResizeTextarea
                   minHeight="0px" 
                   value={data.text}
@@ -299,16 +299,14 @@ function Create() {
                   onChange={(value) => handleTextChanged(value)}
                   placeholder="Enter your text here..."
 
-                  height="calc(100vh - 550px)"
+                  height="max(calc(100vh - 590px), 100px)"
                   language={language}
                   theme="vs-dark"
                   defaultValue={data.text}
                   options={{
-                    // readOnly: true,
                     minimap: { enabled: false },
                     scrollbar: {
                       vertical: "hidden",
-                      horizontal: "hidden",
                     },
                     lineNumbers: "off",
                   }}
