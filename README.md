@@ -17,7 +17,6 @@ This is my pet project offers a fast and lightweight solution for storing and sh
 ![Login](tools/img/login.png)
 ![Home](tools/img/home.png)
 ![Profile](tools/img/profile.png)
-![Profile](tools/img/profile_01.png)
 
 ---
 
