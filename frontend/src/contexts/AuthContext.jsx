@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useToast } from "./ToastContext";
+import { useNavigate } from "react-router";
 
 
 const AuthContext = createContext();
@@ -15,6 +16,8 @@ const AuthProvider = ( { children } ) => {
             refreshToken();
         }
     }, []);
+
+    const redirect = useNavigate();
 
     const signup = async (SignUpForm) => {
         try {
@@ -80,8 +83,7 @@ const AuthProvider = ( { children } ) => {
             setUserInfo(data.data);
             localStorage.setItem("refreshToken", data.refreshToken);
             localStorage.setItem("userInfo", JSON.stringify(data.data));
-
-            addToast("info", "Login successful!");
+            // addToast("info", "Login successful!");
 
             return true;
         } catch (err) {
@@ -104,10 +106,12 @@ const AuthProvider = ( { children } ) => {
 
             if (!res.ok) {
                 const errorData = await res.json();
-
+                
                 if (errorData.error === 'INVALID_TOKEN' || errorData.error === 'TOKEN_EXPIRED') {
-                    alert.log("[DEBUG]: ", errorData);
+                    addToast("error", "Session expired. Please log in again.");
                     logout();
+
+                    redirect("/login");
                 }
 
                 throw new Error(errorData.message || "Failed to refresh token");
@@ -132,7 +136,7 @@ const AuthProvider = ( { children } ) => {
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("userInfo");
 
-        addToast("info", "Logged out successfully.");
+        // addToast("info", "Logged out successfully.");
     }
 
     const value = {

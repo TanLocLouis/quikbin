@@ -4,7 +4,7 @@ const Button = ({width = "100%",
                 height = "50px",
                 margin = "0",
                 title = "Button",
-                color = "var(--color-text-primary)",
+                color = "white",
                 backgroundColor = "var(--color-primary)",
                 ...props}) => {
     return (
