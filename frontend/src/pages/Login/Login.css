@@ -95,6 +95,7 @@
     margin: 0;
 
     width: 100%;
+    color: white;
     background-color: var(--color-primary);
     border-radius: 0.5em;
 
