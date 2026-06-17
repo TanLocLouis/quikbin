@@ -23,6 +23,11 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'ok' });
 });
 
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from './swagger-output.json' with { type: 'json' };
+ // Serve Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 // Backend Listen
 app.listen(3000, () => {
     console.log('[STATUS] Server is listeing on port 3000');

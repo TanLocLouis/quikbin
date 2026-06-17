@@ -168,8 +168,8 @@
 
   
   /* Layer 2  */
-  --color-primary: var(--color-indigo-400);
-  --color-primary-soft: var(--color-indigo-300);
+  --color-primary: var(--color-stone-400);
+  --color-primary-soft: var(--color-stone-300);
   --color-secondary: var(--color-neutral-100);
   --color-secondary-soft: var(--color-neutral-300);
 
@@ -184,8 +184,8 @@
 
 html[data-theme="dark"] {
   /* Layer 2  */
-  --color-primary: var(--color-indigo-400);
-  --color-primary-soft: var(--color-indigo-300);
+  --color-primary: var(--color-stone-400);
+  --color-primary-soft: var(--color-stone-300);
   --color-secondary: var(--color-neutral-800);
   --color-secondary-soft: var(--color-neutral-700);
 
